@@ -18,6 +18,12 @@ const StartNode = preload("../nodes/start_node.gd")
 const EndNode = preload("../nodes/end_node.gd")
 
 func _enter_tree() -> void:
+	# Because this node might be added too late to be notified of all
+	# `InteractionTrigger`s, we also connect to all nodes in the
+	# `InteractionTriggers` group.
+	for trigger in get_tree().get_nodes_in_group("InteractionTriggers"):
+		trigger.connect("triggered", self, "_on_InteractionNode_triggered",
+				[trigger])
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")
 
 

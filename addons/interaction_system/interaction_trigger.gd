@@ -9,5 +9,10 @@ signal triggered
 
 export var interaction : InteractionTree
 
+func _enter_tree() -> void:
+	add_to_group("InteractionTriggers")
+
+
+# Start the interaction in an `InteractionMenu`.
 func trigger() -> void:
 	emit_signal("triggered")

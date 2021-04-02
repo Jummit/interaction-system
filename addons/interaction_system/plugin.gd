@@ -1,7 +1,8 @@
 tool
 extends EditorPlugin
 
-onready var interaction_tree_editor : Control = preload("res://addons/interaction_system/interaction_tree_editor/interaction_tree_editor.tscn").instance()
+onready var interaction_tree_editor : Control = preload(\
+		"interaction_tree_editor/interaction_tree_editor.tscn").instance()
 
 func _ready() -> void:
 	interaction_tree_editor.undo_redo = get_undo_redo()

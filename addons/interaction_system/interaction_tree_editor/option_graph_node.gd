@@ -9,7 +9,7 @@ signal option_edited(option_num)
 signal option_added
 signal option_removed
 
-const OptionsInteractionNode = preload("res://addons/interaction_system/nodes/options_node.gd")
+const OptionsInteractionNode = preload("../nodes/options_node.gd")
 
 onready var remove_option_button : Button = $Buttons/RemoveOptionButton
 

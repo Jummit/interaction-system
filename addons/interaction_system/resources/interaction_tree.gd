@@ -10,7 +10,7 @@ The interaction tree that contains a list of `InteractionNode`s
 export var nodes : Dictionary
 export var comments : Array
 
-const StartNode = preload("res://addons/interaction_system/nodes/start_node.gd")
+const StartNode = preload("../nodes/start_node.gd")
 
 func _init() -> void:
 	if nodes.empty():

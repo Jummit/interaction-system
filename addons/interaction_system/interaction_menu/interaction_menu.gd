@@ -12,10 +12,10 @@ var interaction : InteractionTree setget set_interaction
 # The options being show currently.
 var current_options : OptionsNode
 
-const OptionsNode = preload("res://addons/interaction_system/nodes/options_node.gd")
-const MessageNode = preload("res://addons/interaction_system/nodes/message_node.gd")
-const StartNode = preload("res://addons/interaction_system/nodes/start_node.gd")
-const EndNode = preload("res://addons/interaction_system/nodes/end_node.gd")
+const OptionsNode = preload("../nodes/options_node.gd")
+const MessageNode = preload("../nodes/message_node.gd")
+const StartNode = preload("../nodes/start_node.gd")
+const EndNode = preload("../nodes/end_node.gd")
 
 func _enter_tree() -> void:
 	get_tree().connect("node_added", self, "_on_SceneTree_node_added")

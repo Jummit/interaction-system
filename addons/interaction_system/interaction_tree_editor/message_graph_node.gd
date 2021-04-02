@@ -7,7 +7,7 @@ The `GraphNode` representation of a `MessageNode`
 
 signal message_edited
 
-const MessageNode = preload("res://addons/interaction_system/nodes/message_node.gd")
+const MessageNode = preload("../nodes/message_node.gd")
 
 func init(node : MessageNode) -> void:
 	var node_name : String = node.data.get_name()

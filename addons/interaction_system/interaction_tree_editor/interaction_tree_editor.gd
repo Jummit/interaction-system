@@ -13,18 +13,18 @@ var copied_nodes : Array
 var connecting_from := -1
 var from_port := -1
 
-var message_graph_node := preload("res://addons/interaction_system/interaction_tree_editor/message_graph_node.tscn")
-var option_graph_node := preload("res://addons/interaction_system/interaction_tree_editor/option_graph_node.tscn")
-var comment_graph_node := preload("res://addons/interaction_system/interaction_tree_editor/comment_graph_node.tscn")
-var start_graph_node := preload("res://addons/interaction_system/interaction_tree_editor/start_graph_node.tscn")
-var end_graph_node := preload("res://addons/interaction_system/interaction_tree_editor/end_graph_node.tscn")
+var message_graph_node := preload("message_graph_node.tscn")
+var option_graph_node := preload("option_graph_node.tscn")
+var comment_graph_node := preload("comment_graph_node.tscn")
+var start_graph_node := preload("start_graph_node.tscn")
+var end_graph_node := preload("end_graph_node.tscn")
 
-const MessageNode = preload("res://addons/interaction_system/nodes/message_node.gd")
-const OptionsNode = preload("res://addons/interaction_system/nodes/options_node.gd")
-const EndNode = preload("res://addons/interaction_system/nodes/end_node.gd")
-const CommentNode = preload("res://addons/interaction_system/nodes/comment_node.gd")
-const CommentGraphNode = preload("res://addons/interaction_system/interaction_tree_editor/comment_graph_node.gd")
-const StartNode = preload("res://addons/interaction_system/nodes/start_node.gd")
+const MessageNode = preload("../nodes/message_node.gd")
+const OptionsNode = preload("../nodes/options_node.gd")
+const EndNode = preload("../nodes/end_node.gd")
+const CommentNode = preload("../nodes/comment_node.gd")
+const CommentGraphNode = preload("comment_graph_node.gd")
+const StartNode = preload("../nodes/start_node.gd")
 
 onready var graph_edit : GraphEdit = $GraphEdit
 onready var add_node_menu : PopupMenu = $AddNodeMenu

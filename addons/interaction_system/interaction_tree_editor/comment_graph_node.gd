@@ -9,7 +9,7 @@ The text can be edited by clicking in the empty space.
 
 signal comment_changed(to)
 
-const CommentNode = preload("res://addons/interaction_system/nodes/comment_node.gd")
+const CommentNode = preload("../nodes/comment_node.gd")
 
 onready var comment_label : Label = $CommentLabel
 onready var comment_edit : TextEdit = $CommentLabel/CommentEdit

@@ -12,8 +12,9 @@ A simple implementation can be found here:
 signal interaction_event(event)
 
 var interaction : InteractionTree setget set_interaction
-# The options being show currently.
-var current_options : OptionsNode
+# The paths of the current options.
+var current_options : PoolIntArray
+var visited_options : Dictionary
 
 const OptionsNode = preload("../nodes/options_node.gd")
 const MessageNode = preload("../nodes/message_node.gd")
@@ -37,8 +38,9 @@ func set_interaction(to : InteractionTree) -> void:
 	show_node(0)
 
 
-func show_options(options : OptionsNode) -> void:
-	current_options = options
+# Show an array of `InteractionOption`s.
+func show_options(options : Array) -> void:
+	pass
 
 
 # The next message/option node has to be shown by the implementation with
@@ -66,7 +68,14 @@ func show_node(node_num : int) -> void:
 	if node is StartNode:
 		show_start(node)
 	elif node is OptionsNode:
-		show_options(node)
+		var options := []
+		for option_num in node.option_data.size():
+			var option : InteractionOption = node.option_data[option_num]
+			if not option.hide_once_visited or\
+					not node.option_paths[option_num] in visited_options:
+				options.append(option)
+		current_options = node.option_paths
+		show_options(options)
 	elif node is MessageNode:
 		show_message(node)
 	elif node is EndNode:
@@ -75,12 +84,13 @@ func show_node(node_num : int) -> void:
 
 # Call this when the user selects an option.
 func option_selected(option : int) -> void:
-	show_node(current_options.option_paths[option])
+	visited_options[current_options[option]] = true
+	show_node(current_options[option])
 
 
 # Clears the interaction panel. Called when a new interaction starts or ends.
 func clear() -> void:
-	current_options = null
+	visited_options.clear()
 
 
 func _on_SceneTree_node_added(node : Node) -> void:

@@ -1,5 +1,5 @@
 extends Node
-class_name InteractionTrigger
+class_name InteractionTrigger, "interaction_trigger_icon.svg"
 
 """
 A node that can be used to start an interaction

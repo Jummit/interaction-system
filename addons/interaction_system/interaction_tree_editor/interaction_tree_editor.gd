@@ -59,9 +59,111 @@ func drop_data(position : Vector2, data) -> void:
 	undo_redo.add_undo_method(self, "update_graph")
 	undo_redo.commit_action()
 
+
 func set_interaction(to):
 	interaction = to
 	update_graph()
+
+
+func add_node(node : InteractionNode, id : int, position : Vector2) -> void:
+	node.position = position
+	interaction.nodes[id] = node
+
+
+func remove_node(id : int) -> void:
+	interaction.nodes.erase(id)
+
+
+func add_comment(comment : CommentNode) -> void:
+	interaction.comments.append(comment)
+
+
+func remove_comment(comment : CommentNode) -> void:
+	interaction.comments.erase(comment)
+
+
+func move_node(node, to : Vector2) -> void:
+	node.position = to
+
+
+func connect_nodes(from : int, from_slot : int, to : int) -> void:
+	var from_node : InteractionNode = interaction.nodes[from]
+	if "next" in from_node:
+		# Could be an `EndNode` or a `MessageNode`
+		from_node.next = to
+	elif from_node is OptionsNode:
+		from_node.option_paths[from_slot] = to
+
+
+func disconnect_nodes(from : int, from_slot : int) -> void:
+	print("disconnect ", from)
+	var from_node : InteractionNode = interaction.nodes[from]
+	if "next" in from_node:
+		# Could be an `EndNode` or a `MessageNode`
+		from_node.next = -1
+	elif from_node is OptionsNode:
+		from_node.option_paths[from_slot] = -1
+
+
+# Add `GraphNode`s and connect them.
+func update_graph() -> void:
+	for node in graph_edit.get_children():
+		if node is GraphNode:
+			node.free()
+	for comment in interaction.comments:
+		var graph_node : GraphNode = comment_graph_node.instance()
+		graph_edit.add_child(graph_node)
+		graph_node.init(comment)
+		graph_node.set_meta("comment", comment)
+		graph_node.connect("comment_changed", self,
+				"_on_CommentGraph_node_comment_changed", [comment])
+		graph_node.connect("resize_request", self,
+				"_on_CommentGraph_resize_request", [graph_node])
+		graph_node.connect("dragged", self, "_on_GraphNode_dragged",
+			[graph_node])
+	for node_id in interaction.nodes:
+		var node : InteractionNode = interaction.nodes[node_id]
+		var graph_node : GraphNode
+		if node is MessageNode:
+			graph_node = message_graph_node.instance()
+			graph_node.connect("message_edited", self,
+					"_on_MessageGraphNode_message_edited", [node])
+		elif node is OptionsNode:
+			graph_node = option_graph_node.instance()
+			graph_node.connect("option_edited", self,
+					"_on_OptionGraphNode_option_edited", [node])
+			graph_node.connect("option_added", self,
+					"_on_OptionGraphNode_option_added", [node])
+			graph_node.connect("option_removed", self,
+					"_on_OptionGraphNode_option_removed", [node])
+		elif node is StartNode:
+			graph_node = start_graph_node.instance()
+		elif node is EndNode:
+			graph_node = end_graph_node.instance()
+		graph_node.offset = node.position
+		graph_node.name = str(node_id)
+		graph_edit.add_child(graph_node)
+		if graph_node.get_script():
+			graph_node.init(node)
+		graph_node.connect("dragged", self, "_on_GraphNode_dragged",
+			[graph_node])
+	update_graph_connections()
+
+
+# Update only the connections between `GraphNode`s.
+func update_graph_connections() -> void:
+	graph_edit.clear_connections()
+	for node_id in interaction.nodes:
+		var node : InteractionNode = interaction.nodes[node_id]
+		if node is OptionsNode:
+			for option_num in node.option_data.size():
+				var to_node = node.option_paths[option_num]
+				if to_node != -1:
+					graph_edit.connect_node(str(node_id), option_num,
+							str(to_node), 0)
+		elif "next" in node:
+			if node.next != -1:
+				graph_edit.connect_node(str(node_id), 0, str(node.next), 0)
 
 
 func _on_GraphEdit_popup_request(position: Vector2) -> void:
@@ -151,23 +253,6 @@ func _on_GraphEdit_delete_nodes_request() -> void:
 	undo_redo.commit_action()
 
 
-func add_node(node : InteractionNode, id : int, position : Vector2) -> void:
-	node.position = position
-	interaction.nodes[id] = node
-
-
-func add_comment(comment : CommentNode) -> void:
-	interaction.comments.append(comment)
-
-
-func remove_comment(comment : CommentNode) -> void:
-	interaction.comments.erase(comment)
-
-
-func remove_node(id : int) -> void:
-	interaction.nodes.erase(id)
-
-
 func _on_GraphEdit_begin_node_move() -> void:
 	undo_redo.create_action("Move Nodes")
 
@@ -185,31 +270,8 @@ func _on_GraphNode_dragged(from : Vector2, to : Vector2,
 	undo_redo.add_undo_method(self, "update_graph")
 
 
-func move_node(node, to : Vector2) -> void:
-	node.position = to
-
-
 func _on_GraphEdit_end_node_move() -> void:
 	undo_redo.commit_action()
-
-
-func connect_nodes(from : int, from_slot : int, to : int) -> void:
-	var from_node : InteractionNode = interaction.nodes[from]
-	if "next" in from_node:
-		# Could be an `EndNode` or a `MessageNode`
-		from_node.next = to
-	elif from_node is OptionsNode:
-		from_node.option_paths[from_slot] = to
-
-
-func disconnect_nodes(from : int, from_slot : int) -> void:
-	print("disconnect ", from)
-	var from_node : InteractionNode = interaction.nodes[from]
-	if "next" in from_node:
-		# Could be an `EndNode` or a `MessageNode`
-		from_node.next = -1
-	elif from_node is OptionsNode:
-		from_node.option_paths[from_slot] = -1
 
 
 func _on_GraphEdit_connection_to_empty(from : String, from_slot : int,
@@ -221,76 +283,13 @@ func _on_GraphEdit_connection_to_empty(from : String, from_slot : int,
 
 
 func _on_GraphEdit_disconnection_request(from : String, from_slot : int,
-		to : String, to_slot: int) -> void:
-	var interaction_node : InteractionNode = graph_edit.get_node(
-			from).get_meta("node")
+		to : String, _to_slot: int) -> void:
 	undo_redo.create_action("Disconnect Node")
 	undo_redo.add_do_method(self, "disconnect_nodes", int(from), from_slot)
 	undo_redo.add_undo_method(self, "connect_nodes", int(from), from_slot, int(to))
 	undo_redo.add_do_method(self, "update_graph_connections")
 	undo_redo.add_undo_method(self, "update_graph_connections")
 	undo_redo.commit_action()
-
-
-# Add `GraphNode`s and connect them.
-func update_graph() -> void:
-	for node in graph_edit.get_children():
-		if node is GraphNode:
-			node.free()
-	for comment in interaction.comments:
-		var graph_node : GraphNode = comment_graph_node.instance()
-		graph_edit.add_child(graph_node)
-		graph_node.init(comment)
-		graph_node.set_meta("comment", comment)
-		graph_node.connect("comment_changed", self,
-				"_on_CommentGraph_node_comment_changed", [comment])
-		graph_node.connect("resize_request", self,
-				"_on_CommentGraph_resize_request", [graph_node])
-		graph_node.connect("dragged", self, "_on_GraphNode_dragged",
-			[graph_node])
-	for node_id in interaction.nodes:
-		var node : InteractionNode = interaction.nodes[node_id]
-		var graph_node : GraphNode
-		if node is MessageNode:
-			graph_node = message_graph_node.instance()
-			graph_node.connect("message_edited", self,
-					"_on_MessageGraphNode_message_edited", [node])
-		elif node is OptionsNode:
-			graph_node = option_graph_node.instance()
-			graph_node.connect("option_edited", self,
-					"_on_OptionGraphNode_message_edited", [node])
-			graph_node.connect("option_added", self,
-					"_on_OptionGraphNode_option_added", [node])
-			graph_node.connect("option_removed", self,
-					"_on_OptionGraphNode_option_removed", [node])
-		elif node is StartNode:
-			graph_node = start_graph_node.instance()
-		elif node is EndNode:
-			graph_node = end_graph_node.instance()
-		graph_node.offset = node.position
-		graph_node.name = str(node_id)
-		graph_edit.add_child(graph_node)
-		if graph_node.get_script():
-			graph_node.init(node)
-		graph_node.connect("dragged", self, "_on_GraphNode_dragged",
-			[graph_node])
-	update_graph_connections()
-
-
-# Update only the connections between `GraphNode`s.
-func update_graph_connections() -> void:
-	graph_edit.clear_connections()
-	for node_id in interaction.nodes:
-		var node : InteractionNode = interaction.nodes[node_id]
-		if node is OptionsNode:
-			for option_num in node.option_data.size():
-				var to_node = node.option_paths[option_num]
-				if to_node != -1:
-					graph_edit.connect_node(str(node_id), option_num,
-							str(to_node), 0)
-		elif "next" in node:
-			if node.next != -1:
-				graph_edit.connect_node(str(node_id), 0, str(node.next), 0)
 
 
 func _on_GraphEdit_paste_nodes_request() -> void:
@@ -316,11 +315,6 @@ func _on_GraphEdit_duplicate_nodes_request() -> void:
 
 func _on_MessageGraphNode_message_edited(node : MessageNode) -> void:
 	emit_signal("resource_edited", node.data)
-
-
-func _on_OptionGraphNode_message_edited(option_num : int,
-		node : OptionsNode) -> void:
-	emit_signal("resource_edited", node.option_data[option_num])
 
 
 func _on_CommentGraph_node_comment_changed(to : String,
@@ -354,6 +348,11 @@ func _on_OptionGraphNode_option_added(node : OptionsNode) -> void:
 	undo_redo.add_do_method(self, "update_graph")
 	undo_redo.add_undo_method(self, "update_graph")
 	undo_redo.commit_action()
+
+
+func _on_OptionGraphNode_option_edited(option_num : int,
+		node : OptionsNode) -> void:
+	emit_signal("resource_edited", node.option_data[option_num])
 
 
 func _on_OptionGraphNode_option_removed(node : OptionsNode) -> void:

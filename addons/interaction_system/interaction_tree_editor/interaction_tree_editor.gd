@@ -96,7 +96,6 @@ func connect_nodes(from : int, from_slot : int, to : int) -> void:
 
 
 func disconnect_nodes(from : int, from_slot : int) -> void:
-	print("disconnect ", from)
 	var from_node : InteractionNode = interaction.nodes[from]
 	if "next" in from_node:
 		# Could be an `EndNode` or a `MessageNode`
@@ -213,19 +212,6 @@ func _on_GraphEdit_connection_request(from : String, from_slot : int,
 	undo_redo.create_action("Connect Nodes")
 	undo_redo.add_do_method(self, "connect_nodes", int(from), from_slot, int(to))
 	undo_redo.add_undo_method(self, "disconnect_nodes", int(from), from_slot)
-	for id in interaction.nodes:
-		var node : InteractionNode = interaction.nodes[id]
-		var connected : bool = "next" in node and node.next == int(to)
-		var slot := -1
-		if node is OptionsNode:
-			for path_num in node.option_paths.size():
-				if node.option_paths[path_num] == int(to):
-					connected = true
-					slot = path_num
-					break
-		if connected:
-			undo_redo.add_do_method(self, "disconnect_nodes", id, slot)
-			undo_redo.add_undo_method(self, "connect_nodes", id, slot, int(to))
 	undo_redo.add_do_method(self, "update_graph_connections")
 	undo_redo.add_undo_method(self, "update_graph_connections")
 	undo_redo.commit_action()

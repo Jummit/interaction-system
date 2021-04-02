@@ -47,7 +47,7 @@ anchor_bottom = 1.0
 margin_left = -31.0
 margin_top = -20.0
 margin_right = 31.0
-text = "The End"
+text = "Ok"
 __meta__ = {
 "_edit_use_anchors_": false
 }

@@ -33,6 +33,32 @@ func apply_changes():
 	pass
 
 
+func can_drop_data(_position : Vector2, data) -> bool:
+	if data is Dictionary and "files" in data:
+		var resource := load(data.files[0])
+		return resource is Script and resource.new() is InteractionMessage or\
+				resource.new() is InteractionOption
+	return false
+
+
+func drop_data(position : Vector2, data) -> void:
+	var node_data : Resource = load(data.files[0]).new()
+	var node : InteractionNode
+	if node_data is InteractionMessage:
+		node = MessageNode.new()
+		node.data = node_data
+	elif node_data is InteractionOption:
+		node = OptionsNode.new()
+		node.add_option(node_data)
+	undo_redo.create_action("Drop Node")
+	var id := interaction.get_available_id()
+	undo_redo.add_do_method(self, "add_node", node, id,
+			position + graph_edit.scroll_offset)
+	undo_redo.add_undo_method(self, "remove_node", id)
+	undo_redo.add_do_method(self, "update_graph")
+	undo_redo.add_undo_method(self, "update_graph")
+	undo_redo.commit_action()
+
 func set_interaction(to):
 	interaction = to
 	update_graph()

@@ -26,6 +26,7 @@ func show_options(options : OptionsNode) -> void:
 
 
 func show_message(message : MessageNode) -> void:
+	.show_message(message)
 	var message_label := Label.new()
 	message_label.text = message.data.text
 	messages.add_child(message_label)

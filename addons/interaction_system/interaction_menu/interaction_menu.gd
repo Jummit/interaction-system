@@ -8,6 +8,9 @@ A simple implementation can be found here:
 "../simple_interaction_menu/simple_interaction_menu.gd"
 """
 
+# Emitted when an `EventMessage` is hit.
+signal interaction_event(event)
+
 var interaction : InteractionTree setget set_interaction
 # The options being show currently.
 var current_options : OptionsNode
@@ -16,6 +19,7 @@ const OptionsNode = preload("../nodes/options_node.gd")
 const MessageNode = preload("../nodes/message_node.gd")
 const StartNode = preload("../nodes/start_node.gd")
 const EndNode = preload("../nodes/end_node.gd")
+const EventMessage = preload("../resources/event_message.gd")
 
 func _enter_tree() -> void:
 	# Because this node might be added too late to be notified of all
@@ -40,7 +44,8 @@ func show_options(options : OptionsNode) -> void:
 # The next message/option node has to be shown by the implementation with
 # `show_node` to allow for confirmation or delay based continuation.
 func show_message(message : MessageNode) -> void:
-	pass
+	if message.data is EventMessage:
+		emit_signal("interaction_event", message.data.text)
 
 
 # End nodes have no special data by default, but the interaction panel should

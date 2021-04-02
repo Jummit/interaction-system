@@ -11,6 +11,9 @@ It is editable in the editor by clicking on the text of a `MessageNode`.
 
 export var text : String
 
+# The name of the `MessageGraphNode` in the editor.
+var node_name := "Message"
+
 func _init(_text := "") -> void:
 	text = _text
 

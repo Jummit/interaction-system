@@ -10,6 +10,7 @@ signal message_edited
 const MessageNode = preload("../nodes/message_node.gd")
 
 func init(node : MessageNode) -> void:
+	title = node.data.node_name
 	var node_name : String = node.data.get_name()
 	if node_name.length() > 15:
 		node_name = node_name.substr(0, 12) + "..."

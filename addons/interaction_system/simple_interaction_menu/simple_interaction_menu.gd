@@ -19,7 +19,7 @@ func show_options(options : Array) -> void:
 	.show_options(options)
 	for option_num in options.size():
 		var option_button := Button.new()
-		option_button.text = options[option_num].text
+		option_button.text = tr(options[option_num].text)
 		option_button.connect("pressed", self, "_on_OptionButton_pressed",
 				[option_num])
 		options_container.add_child(option_button)
@@ -28,7 +28,7 @@ func show_options(options : Array) -> void:
 func show_message(message : MessageNode) -> void:
 	.show_message(message)
 	var message_label := Label.new()
-	message_label.text = message.data.text
+	message_label.text = tr(message.data.text)
 	messages.add_child(message_label)
 	show_node(message.next)
 

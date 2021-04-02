@@ -3,7 +3,7 @@ extends Resource
 class_name InteractionTree
 
 """
-
+The interaction tree that contains a list of `InteractionNode`s
 """
 
 # A map of id to `InteractionNode`. The 0th node is always the `StartNode`.

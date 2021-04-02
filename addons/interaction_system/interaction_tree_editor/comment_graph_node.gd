@@ -2,7 +2,9 @@ tool
 extends GraphNode
 
 """
+The `GraphNode` representation of a `CommentNode`
 
+The text can be edited by clicking in the empty space.
 """
 
 signal comment_changed(to)

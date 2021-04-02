@@ -3,7 +3,7 @@ extends Resource
 class_name InteractionNode
 
 """
-
+The base node of an `InteractionTree`
 """
 
 export var position : Vector2

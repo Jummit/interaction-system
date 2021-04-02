@@ -3,7 +3,9 @@ extends Resource
 class_name InteractionOption
 
 """
+The data of an option
 
+See `InteractionMessage`
 """
 
 export var text : String

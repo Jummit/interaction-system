@@ -2,6 +2,7 @@ tool
 extends GraphNode
 
 """
+The `GraphNode` representation of a `OptionNode`
 """
 
 signal option_edited(option_num)

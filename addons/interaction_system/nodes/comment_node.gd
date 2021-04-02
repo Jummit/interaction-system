@@ -2,7 +2,7 @@ tool
 extends Resource
 
 """
-
+A comment node that has no effect on the interaction
 """
 
 export var position : Vector2

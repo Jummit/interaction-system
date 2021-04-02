@@ -2,7 +2,7 @@ tool
 extends Control
 
 """
-
+The editor used to edit `InteractionTree`s in the Engine
 """
 
 signal resource_edited(resource)

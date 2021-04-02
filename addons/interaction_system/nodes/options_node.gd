@@ -2,7 +2,7 @@ tool
 extends InteractionNode
 
 """
-
+A node that shows a list of options to the player
 """
 
 # An array of node ids the options lead to.

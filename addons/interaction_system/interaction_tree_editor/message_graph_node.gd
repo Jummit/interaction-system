@@ -2,13 +2,14 @@ tool
 extends GraphNode
 
 """
+The `GraphNode` representation of a `MessageNode`
 """
 
 signal message_edited
 
-const MessageInteractionNode = preload("res://addons/interaction_system/nodes/message_node.gd")
+const MessageNode = preload("res://addons/interaction_system/nodes/message_node.gd")
 
-func init(node : MessageInteractionNode) -> void:
+func init(node : MessageNode) -> void:
 	$MessageButton.text = node.data.get_name()
 
 

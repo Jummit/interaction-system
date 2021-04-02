@@ -34,9 +34,13 @@ func show_message(message : MessageNode) -> void:
 
 
 func show_end(end : EndNode) -> void:
+	.show_end(end)
+
+
+func end_interaction() -> void:
 	end_button.show()
 	yield(end_button, "pressed")
-	.show_end(end)
+	.end_interaction()
 
 
 func clear() -> void:

@@ -34,6 +34,8 @@ func _enter_tree() -> void:
 
 func set_interaction(to : InteractionTree) -> void:
 	interaction = to
+	if not interaction in visited_options:
+		visited_options[interaction] = {}
 	clear()
 	show_node(0)
 
@@ -52,9 +54,8 @@ func show_message(message : MessageNode) -> void:
 
 # End nodes have no special data by default, but the interaction panel should
 # pause on an end node to make it possible to read the previous message.
-# This is also the place to clean up after an interaction.
 func show_end(end : EndNode) -> void:
-	clear()
+	end_interaction()
 
 
 # This shows the node after the start node by default.
@@ -69,12 +70,16 @@ func show_node(node_num : int) -> void:
 		show_start(node)
 	elif node is OptionsNode:
 		var options := []
+		current_options = []
 		for option_num in node.option_data.size():
 			var option : InteractionOption = node.option_data[option_num]
+			var path : int = node.option_paths[option_num]
 			if not option.hide_once_visited or\
-					not node.option_paths[option_num] in visited_options:
+					not path in visited_options[interaction]:
 				options.append(option)
-		current_options = node.option_paths
+				current_options.append(path)
+		if options.empty():
+			end_interaction()
 		show_options(options)
 	elif node is MessageNode:
 		show_message(node)
@@ -84,13 +89,18 @@ func show_node(node_num : int) -> void:
 
 # Call this when the user selects an option.
 func option_selected(option : int) -> void:
-	visited_options[current_options[option]] = true
+	visited_options[interaction][current_options[option]] = true
 	show_node(current_options[option])
+
+
+# Called when the interaction came to an end.
+func end_interaction() -> void:
+	clear()
 
 
 # Clears the interaction panel. Called when a new interaction starts or ends.
 func clear() -> void:
-	visited_options.clear()
+	current_options = []
 
 
 func _on_SceneTree_node_added(node : Node) -> void:

@@ -1,0 +1,39 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/interaction_system/interaction_tree_editor/option_graph_node.gd" type="Script" id=1]
+
+[node name="OptionInteractionGraphNode" type="GraphNode"]
+margin_right = 73.0
+margin_bottom = 50.0
+title = "Options"
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Buttons" type="HBoxContainer" parent="."]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 67.0
+margin_bottom = 44.0
+
+[node name="AddOptionButton" type="Button" parent="Buttons"]
+margin_right = 20.0
+margin_bottom = 20.0
+text = "+"
+
+[node name="RemoveOptionButton" type="Button" parent="Buttons"]
+margin_left = 24.0
+margin_right = 41.0
+margin_bottom = 20.0
+disabled = true
+text = "-"
+
+[connection signal="pressed" from="Buttons/AddOptionButton" to="." method="_on_AddOptionButton_pressed"]
+[connection signal="pressed" from="Buttons/RemoveOptionButton" to="." method="_on_RemoveOptionButton_pressed"]

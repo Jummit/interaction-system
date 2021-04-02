@@ -1,0 +1,249 @@
+[gd_scene load_steps=52 format=2]
+
+[ext_resource path="res://addons/interaction_system/simple_interaction_menu/simple_interaction_menu.tscn" type="PackedScene" id=1]
+[ext_resource path="res://main.gd" type="Script" id=2]
+[ext_resource path="res://box.gd" type="Script" id=3]
+[ext_resource path="res://crate.svg" type="Texture" id=4]
+[ext_resource path="res://addons/interaction_system/resources/interaction_tree.gd" type="Script" id=5]
+[ext_resource path="res://addons/interaction_system/interaction_trigger.gd" type="Script" id=6]
+[ext_resource path="res://addons/interaction_system/resources/interaction_message.gd" type="Script" id=7]
+[ext_resource path="res://addons/interaction_system/nodes/message_node.gd" type="Script" id=8]
+[ext_resource path="res://addons/interaction_system/nodes/options_node.gd" type="Script" id=9]
+[ext_resource path="res://addons/interaction_system/resources/interaction_option.gd" type="Script" id=10]
+[ext_resource path="res://addons/interaction_system/nodes/comment_node.gd" type="Script" id=11]
+[ext_resource path="res://addons/interaction_system/nodes/start_node.gd" type="Script" id=12]
+[ext_resource path="res://addons/interaction_system/nodes/end_node.gd" type="Script" id=13]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 62, 52 )
+
+[sub_resource type="Resource" id=2]
+script = ExtResource( 11 )
+position = Vector2( 760, 160 )
+size = Vector2( 474, 201 )
+text = "oetest comment
+e
+more ccoment
+test"
+
+[sub_resource type="Resource" id=3]
+script = ExtResource( 7 )
+text = "Test Message"
+
+[sub_resource type="Resource" id=4]
+script = ExtResource( 8 )
+position = Vector2( 620, -20 )
+data = SubResource( 3 )
+next = -1
+
+[sub_resource type="Resource" id=5]
+script = ExtResource( 7 )
+text = "Message"
+
+[sub_resource type="Resource" id=6]
+script = ExtResource( 8 )
+position = Vector2( 380, 80 )
+data = SubResource( 5 )
+next = 7
+
+[sub_resource type="Resource" id=7]
+script = ExtResource( 7 )
+text = "Message"
+
+[sub_resource type="Resource" id=8]
+script = ExtResource( 8 )
+position = Vector2( 180, 100 )
+data = SubResource( 7 )
+next = 2
+
+[sub_resource type="Resource" id=9]
+script = ExtResource( 7 )
+text = "Message"
+
+[sub_resource type="Resource" id=10]
+script = ExtResource( 8 )
+position = Vector2( 600, 200 )
+data = SubResource( 9 )
+next = -1
+
+[sub_resource type="Resource" id=11]
+script = ExtResource( 7 )
+text = "Message"
+
+[sub_resource type="Resource" id=12]
+script = ExtResource( 8 )
+position = Vector2( 1000, -20 )
+data = SubResource( 11 )
+next = -1
+
+[sub_resource type="Resource" id=13]
+script = ExtResource( 10 )
+text = "Option 1"
+
+[sub_resource type="Resource" id=14]
+script = ExtResource( 10 )
+text = "Option 2"
+
+[sub_resource type="Resource" id=15]
+script = ExtResource( 9 )
+position = Vector2( 820, -20 )
+option_paths = PoolIntArray( -1, -1 )
+option_data = [ SubResource( 13 ), SubResource( 14 ) ]
+
+[sub_resource type="Resource" id=16]
+script = ExtResource( 13 )
+position = Vector2( 600, 80 )
+
+[sub_resource type="Resource" id=17]
+script = ExtResource( 5 )
+nodes = {
+1: SubResource( 4 ),
+2: SubResource( 6 ),
+3: SubResource( 8 ),
+4: SubResource( 10 ),
+5: SubResource( 12 ),
+6: SubResource( 15 ),
+7: SubResource( 16 )
+}
+comments = [ SubResource( 2 ) ]
+
+[sub_resource type="Resource" id=18]
+script = ExtResource( 12 )
+position = Vector2( -140, 0 )
+next = 1
+
+[sub_resource type="Resource" id=19]
+script = ExtResource( 7 )
+text = "Hello Traveler! What do you want?"
+
+[sub_resource type="Resource" id=20]
+script = ExtResource( 8 )
+position = Vector2( -60, 0 )
+data = SubResource( 19 )
+next = 2
+
+[sub_resource type="Resource" id=21]
+script = ExtResource( 10 )
+text = "Ice cream."
+
+[sub_resource type="Resource" id=22]
+script = ExtResource( 10 )
+text = "A fight!"
+
+[sub_resource type="Resource" id=23]
+script = ExtResource( 9 )
+position = Vector2( 260, 0 )
+option_paths = PoolIntArray( 3, 4 )
+option_data = [ SubResource( 21 ), SubResource( 22 ) ]
+
+[sub_resource type="Resource" id=24]
+script = ExtResource( 7 )
+text = "I don't have any."
+
+[sub_resource type="Resource" id=25]
+script = ExtResource( 8 )
+position = Vector2( 420, 0 )
+data = SubResource( 24 )
+next = 9
+
+[sub_resource type="Resource" id=26]
+script = ExtResource( 7 )
+text = "A fight? Then let's go!"
+
+[sub_resource type="Resource" id=27]
+script = ExtResource( 8 )
+position = Vector2( 420, 80 )
+data = SubResource( 26 )
+next = 5
+
+[sub_resource type="Resource" id=28]
+script = ExtResource( 10 )
+text = "Use a sword."
+
+[sub_resource type="Resource" id=29]
+script = ExtResource( 10 )
+text = "Use your fist."
+
+[sub_resource type="Resource" id=30]
+script = ExtResource( 9 )
+position = Vector2( 660, 80 )
+option_paths = PoolIntArray( 7, 10 )
+option_data = [ SubResource( 28 ), SubResource( 29 ) ]
+
+[sub_resource type="Resource" id=31]
+script = ExtResource( 13 )
+position = Vector2( 1000, 160 )
+
+[sub_resource type="Resource" id=32]
+script = ExtResource( 7 )
+text = "You win! He had ice cream, and you eat it."
+
+[sub_resource type="Resource" id=33]
+script = ExtResource( 8 )
+position = Vector2( 860, 80 )
+data = SubResource( 32 )
+next = 8
+
+[sub_resource type="Resource" id=34]
+script = ExtResource( 13 )
+position = Vector2( 1240, 80 )
+
+[sub_resource type="Resource" id=35]
+script = ExtResource( 13 )
+position = Vector2( 620, 0 )
+
+[sub_resource type="Resource" id=36]
+script = ExtResource( 7 )
+text = "You loose!"
+
+[sub_resource type="Resource" id=37]
+script = ExtResource( 8 )
+position = Vector2( 860, 160 )
+data = SubResource( 36 )
+next = 6
+
+[sub_resource type="Resource" id=38]
+script = ExtResource( 5 )
+nodes = {
+0: SubResource( 18 ),
+1: SubResource( 20 ),
+2: SubResource( 23 ),
+3: SubResource( 25 ),
+4: SubResource( 27 ),
+5: SubResource( 30 ),
+6: SubResource( 31 ),
+7: SubResource( 33 ),
+8: SubResource( 34 ),
+9: SubResource( 35 ),
+10: SubResource( 37 )
+}
+comments = [  ]
+
+[node name="Main" type="Node2D"]
+script = ExtResource( 2 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="InteractionMenu" parent="CanvasLayer" instance=ExtResource( 1 )]
+anchor_left = 0.764
+anchor_top = 0.03
+anchor_right = 0.982
+anchor_bottom = 0.868
+
+[node name="Box" type="Area2D" parent="."]
+position = Vector2( 414, 256 )
+script = ExtResource( 3 )
+
+[node name="Sprite" type="Sprite" parent="Box"]
+texture = ExtResource( 4 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Box"]
+shape = SubResource( 1 )
+
+[node name="OldInteractionTrigger" type="Node" parent="Box"]
+script = ExtResource( 6 )
+interaction = SubResource( 17 )
+
+[node name="InteractionTrigger" type="Node" parent="Box"]
+script = ExtResource( 6 )
+interaction = SubResource( 38 )

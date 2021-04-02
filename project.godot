@@ -1,0 +1,63 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Panel",
+"class": "InteractionMenu",
+"language": "GDScript",
+"path": "res://addons/interaction_system/interaction_menu/interaction_menu.gd"
+}, {
+"base": "Resource",
+"class": "InteractionMessage",
+"language": "GDScript",
+"path": "res://addons/interaction_system/resources/interaction_message.gd"
+}, {
+"base": "Resource",
+"class": "InteractionNode",
+"language": "GDScript",
+"path": "res://addons/interaction_system/nodes/interaction_node.gd"
+}, {
+"base": "Resource",
+"class": "InteractionOption",
+"language": "GDScript",
+"path": "res://addons/interaction_system/resources/interaction_option.gd"
+}, {
+"base": "Resource",
+"class": "InteractionTree",
+"language": "GDScript",
+"path": "res://addons/interaction_system/resources/interaction_tree.gd"
+}, {
+"base": "Node",
+"class": "InteractionTrigger",
+"language": "GDScript",
+"path": "res://addons/interaction_system/interaction_trigger.gd"
+} ]
+_global_script_class_icons={
+"InteractionMenu": "",
+"InteractionMessage": "",
+"InteractionNode": "",
+"InteractionOption": "",
+"InteractionTree": "",
+"InteractionTrigger": ""
+}
+
+[application]
+
+config/name="Interaction System Addon Demo"
+run/main_scene="res://main.tscn"
+config/icon="res://icon.png"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/interaction_system/plugin.cfg" )
+
+[rendering]
+
+environment/default_environment="res://default_env.tres"

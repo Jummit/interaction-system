@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/interaction_system/interaction_tree_editor/interaction_tree_editor.gd" type="Script" id=1]
+
+[node name="InteractionTreeEditor" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+rect_min_size = Vector2( 0, 300 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GraphEdit" type="GraphEdit" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+right_disconnects = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AddNodeMenu" type="PopupMenu" parent="."]
+margin_right = 76.0
+margin_bottom = 52.0
+items = [ "Message", null, 0, false, false, 0, 0, null, "", false, "Option", null, 0, false, false, 1, 0, null, "", false, "Comment", null, 0, false, false, 2, 0, null, "", false, "End", null, 0, false, false, 3, 0, null, "", false ]
+
+[connection signal="_begin_node_move" from="GraphEdit" to="." method="_on_GraphEdit_begin_node_move"]
+[connection signal="_end_node_move" from="GraphEdit" to="." method="_on_GraphEdit_end_node_move"]
+[connection signal="connection_request" from="GraphEdit" to="." method="_on_GraphEdit_connection_request"]
+[connection signal="connection_to_empty" from="GraphEdit" to="." method="_on_GraphEdit_connection_to_empty"]
+[connection signal="copy_nodes_request" from="GraphEdit" to="." method="_on_GraphEdit_copy_nodes_request"]
+[connection signal="delete_nodes_request" from="GraphEdit" to="." method="_on_GraphEdit_delete_nodes_request"]
+[connection signal="disconnection_request" from="GraphEdit" to="." method="_on_GraphEdit_disconnection_request"]
+[connection signal="duplicate_nodes_request" from="GraphEdit" to="." method="_on_GraphEdit_duplicate_nodes_request"]
+[connection signal="paste_nodes_request" from="GraphEdit" to="." method="_on_GraphEdit_paste_nodes_request"]
+[connection signal="popup_request" from="GraphEdit" to="." method="_on_GraphEdit_popup_request"]
+[connection signal="id_pressed" from="AddNodeMenu" to="." method="_on_AddNodeMenu_id_pressed"]

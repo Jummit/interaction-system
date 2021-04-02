@@ -1,0 +1,43 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/interaction_system/interaction_tree_editor/comment_graph_node.gd" type="Script" id=1]
+
+[node name="CommentGraphNode" type="GraphNode"]
+margin_right = 268.0
+margin_bottom = 154.0
+title = "Comment"
+resizable = true
+comment = true
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CommentLabel" type="Label" parent="."]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 252.0
+margin_bottom = 38.0
+mouse_filter = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CommentEdit" type="TextEdit" parent="CommentLabel"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="gui_input" from="CommentLabel" to="." method="_on_CommentLabel_gui_input"]
+[connection signal="focus_exited" from="CommentLabel/CommentEdit" to="." method="_on_TextEdit_focus_exited"]

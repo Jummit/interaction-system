@@ -16,7 +16,10 @@ onready var remove_option_button : Button = $Buttons/RemoveOptionButton
 func init(node : OptionsInteractionNode) -> void:
 	for option_num in node.option_data.size():
 		var option := Button.new()
-		option.text = node.option_data[option_num].get_name()
+		var node_name : String = node.option_data[option_num].get_name()
+		if node_name.length() > 15:
+			node_name = node_name.substr(0, 12) + "..."
+		option.text = node_name
 		option.connect("pressed", self, "_on_OptionButton_pressed",
 				[option_num])
 		add_child(option)

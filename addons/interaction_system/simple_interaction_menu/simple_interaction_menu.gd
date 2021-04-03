@@ -15,13 +15,14 @@ func show_start(start : StartNode) -> void:
 	.show_start(start)
 
 
-func show_options(options : Array) -> void:
+func show_options(options : OptionsNode) -> void:
 	.show_options(options)
-	for option_num in options.size():
+	for option_num in options.option_data.size():
 		var option_button := Button.new()
-		option_button.text = tr(options[option_num].text)
+		option_button.text = tr(options.option_data[option_num].text)
 		option_button.connect("pressed", self, "_on_OptionButton_pressed",
 				[option_num])
+		option_button.disabled = visited_option(options, option_num)
 		options_container.add_child(option_button)
 
 

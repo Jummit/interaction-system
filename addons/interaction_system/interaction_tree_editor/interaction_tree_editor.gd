@@ -421,7 +421,6 @@ func get_graph_node_at_pos(position : Vector2) -> GraphNode:
 
 func _on_GraphEdit_draw() -> void:
 	if selecting_back_target_for:
-		print(get_local_mouse_position())
 		var graph_node := get_graph_node_at_pos(get_local_mouse_position())
 		if graph_node:
 			graph_edit.draw_rect(graph_node.get_rect(), Color.white, false, 3)

@@ -56,8 +56,11 @@ func can_drop_data_fw(_position : Vector2, data, _control : Control) -> bool:
 		var file : String = data.files[0]
 		return ResourceLoader.exists(file) and\
 				load(file).new() is InteractionOption
-	return data is Dictionary and data.get("type") == "option" and\
-			data.from == name
+	if data is Dictionary and data.get("type") == "option" and\
+			data.from == name:
+		options.drop_mode_flags = Tree.DROP_MODE_INBETWEEN
+		return true
+	return false
 
 
 func drop_data_fw(position : Vector2, data : Dictionary,

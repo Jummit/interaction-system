@@ -12,5 +12,4 @@ func _init() -> void:
 
 
 func get_content_string() -> String:
-	print(item.resource_name)
-	return "" if not item else item.resource_path.get_file().split(".")[0].capitalize()
+	return "" if not item else item.name

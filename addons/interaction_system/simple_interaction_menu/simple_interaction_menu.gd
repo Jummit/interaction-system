@@ -27,6 +27,7 @@ func show_options(options : OptionsNode) -> void:
 				[option_num])
 		option_button.disabled = visited_option(options, option_num)
 		options_container.add_child(option_button)
+	scroll_to_bottom()
 
 
 func show_action_node(node : ActionNode) -> void:
@@ -35,7 +36,12 @@ func show_action_node(node : ActionNode) -> void:
 		var message_label := Label.new()
 		message_label.text = tr(node.data.text)
 		messages.add_child(message_label)
+	if node.data is ItemAquirement:
+		var texture := TextureRect.new()
+		texture.texture = node.data.item.icon
+		messages.add_child(texture)
 	show_node(node.paths[0])
+	scroll_to_bottom()
 
 
 func show_end(end : EndNode) -> void:
@@ -55,6 +61,11 @@ func clear() -> void:
 	for option in options_container.get_children():
 		option.queue_free()
 	hide()
+
+
+func scroll_to_bottom() -> void:
+	yield(get_tree(), "idle_frame")
+	$ScrollContainer.scroll_vertical = $ScrollContainer.get_v_scrollbar().max_value
 
 
 func _on_OptionButton_pressed(option : int) -> void:

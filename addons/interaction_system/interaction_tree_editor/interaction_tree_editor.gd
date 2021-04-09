@@ -14,6 +14,7 @@ var copy_offset : Vector2
 var connecting_from := -1
 var from_position : Vector2
 var from_port := -1
+var selecting_back_target_for : BackNode
 
 var action_graph_node := preload("action_graph_node.tscn")
 var option_graph_node := preload("option_graph_node.tscn")
@@ -21,6 +22,7 @@ var comment_graph_node := preload("comment_graph_node.tscn")
 var start_graph_node := preload("start_graph_node.tscn")
 var end_graph_node := preload("end_graph_node.tscn")
 var condition_graph_node := preload("condition_graph_node.tscn")
+var back_graph_node := preload("back_graph_node.tscn")
 
 const ActionNode = preload("../nodes/action_node.gd")
 const OptionsNode = preload("../nodes/options_node.gd")
@@ -28,6 +30,7 @@ const EndNode = preload("../nodes/end_node.gd")
 const CommentNode = preload("../nodes/comment_node.gd")
 const CommentGraphNode = preload("comment_graph_node.gd")
 const StartNode = preload("../nodes/start_node.gd")
+const BackNode = preload("../nodes/back_node.gd")
 const ConditionNode = preload("../nodes/condition_node.gd")
 const Message = preload("../resources/message.gd")
 const Event = preload("../resources/event.gd")
@@ -44,8 +47,8 @@ func can_drop_data(_position : Vector2, data) -> bool:
 	if data is Dictionary and "files" in data:
 		var resource := load(data.files[0])
 		return resource is Script and\
-				resource.new() is InteractionActionData or\
-				resource.new() is InteractionOption
+				(resource.new() is InteractionActionData or\
+				resource.new() is InteractionOption)
 	return false
 
 
@@ -143,6 +146,10 @@ func update_graph() -> void:
 			graph_node = condition_graph_node.instance()
 			graph_node.connect("condition_edited", self,
 					"_on_ConditionGraphNode_condition_edited", [node])
+		elif node is BackNode:
+			graph_node = back_graph_node.instance()
+			graph_node.connect("target_clicked", self,
+					"_on_BackGraphNode_target_clicked", [node])
 		
 		graph_node.offset = node.position
 		graph_node.name = str(node_id)
@@ -198,6 +205,8 @@ func _on_AddNodeMenu_id_pressed(id : int) -> void:
 			6:
 				new_node = ActionNode.new()
 				new_node.data = StateChange.new()
+			7:
+				new_node = BackNode.new()
 		
 		var new_id := interaction.get_available_id()
 		
@@ -397,3 +406,41 @@ func _on_OptionGraphNode_option_moved(option : int, to : int,
 
 func _on_ConditionGraphNode_condition_edited(node : ConditionNode) -> void:
 	emit_signal("resource_edited", node.condition)
+
+
+func _on_BackGraphNode_target_clicked(node : BackNode) -> void:
+	selecting_back_target_for = node
+
+
+func get_graph_node_at_pos(position : Vector2) -> GraphNode:
+	for node in graph_edit.get_children():
+		if node is GraphNode and node.get_rect().has_point(position):
+			return node
+	return null
+
+
+func _on_GraphEdit_draw() -> void:
+	if selecting_back_target_for:
+		print(get_local_mouse_position())
+		var graph_node := get_graph_node_at_pos(get_local_mouse_position())
+		if graph_node:
+			graph_edit.draw_rect(graph_node.get_rect(), Color.white, false, 3)
+
+
+func _input(event: InputEvent) -> void:
+	if not selecting_back_target_for:
+		return
+	if event is InputEventMouseButton and\
+			event.pressed and event.button_index == BUTTON_LEFT:
+		var graph_node := get_graph_node_at_pos(get_local_mouse_position())
+		if graph_node:
+			undo_redo.create_action("Set Go Back Target")
+			undo_redo.add_do_property(selecting_back_target_for, "target",
+					int(graph_node.name))
+			undo_redo.add_undo_property(selecting_back_target_for, "target",
+					selecting_back_target_for.target)
+			undo_redo.add_do_method(self, "update_graph")
+			undo_redo.add_undo_method(self, "update_graph")
+			undo_redo.commit_action()
+		selecting_back_target_for = null
+	graph_edit.update()

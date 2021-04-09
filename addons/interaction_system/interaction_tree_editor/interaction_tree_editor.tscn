@@ -23,7 +23,7 @@ __meta__ = {
 [node name="AddNodeMenu" type="PopupMenu" parent="."]
 margin_right = 76.0
 margin_bottom = 52.0
-items = [ "Message", null, 0, false, false, 0, 0, null, "", false, "Option", null, 0, false, false, 1, 0, null, "", false, "Comment", null, 0, false, false, 2, 0, null, "", false, "End", null, 0, false, false, 3, 0, null, "", false, "Condition", null, 0, false, false, 4, 0, null, "", false, "Event", null, 0, false, false, 5, 0, null, "", false, "Change State", null, 0, false, false, 6, 0, null, "", false ]
+items = [ "Message", null, 0, false, false, 0, 0, null, "", false, "Option", null, 0, false, false, 1, 0, null, "", false, "Comment", null, 0, false, false, 2, 0, null, "", false, "End", null, 0, false, false, 3, 0, null, "", false, "Condition", null, 0, false, false, 4, 0, null, "", false, "Event", null, 0, false, false, 5, 0, null, "", false, "Change State", null, 0, false, false, 6, 0, null, "", false, "Go Back", null, 0, false, false, 7, 0, null, "", false ]
 
 [connection signal="_begin_node_move" from="GraphEdit" to="." method="_on_GraphEdit_begin_node_move"]
 [connection signal="_end_node_move" from="GraphEdit" to="." method="_on_GraphEdit_end_node_move"]
@@ -32,6 +32,7 @@ items = [ "Message", null, 0, false, false, 0, 0, null, "", false, "Option", nul
 [connection signal="copy_nodes_request" from="GraphEdit" to="." method="_on_GraphEdit_copy_nodes_request"]
 [connection signal="delete_nodes_request" from="GraphEdit" to="." method="_on_GraphEdit_delete_nodes_request"]
 [connection signal="disconnection_request" from="GraphEdit" to="." method="_on_GraphEdit_disconnection_request"]
+[connection signal="draw" from="GraphEdit" to="." method="_on_GraphEdit_draw"]
 [connection signal="duplicate_nodes_request" from="GraphEdit" to="." method="_on_GraphEdit_duplicate_nodes_request"]
 [connection signal="paste_nodes_request" from="GraphEdit" to="." method="_on_GraphEdit_paste_nodes_request"]
 [connection signal="popup_request" from="GraphEdit" to="." method="_on_GraphEdit_popup_request"]

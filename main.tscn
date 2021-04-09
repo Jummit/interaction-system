@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=2]
+[gd_scene load_steps=51 format=2]
 
 [ext_resource path="res://addons/interaction_system/simple_interaction_menu/simple_interaction_menu.tscn" type="PackedScene" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -15,19 +15,28 @@
 [ext_resource path="res://addons/interaction_system/nodes/start_node.gd" type="Script" id=13]
 [ext_resource path="res://addons/interaction_system/resources/state_change.gd" type="Script" id=14]
 [ext_resource path="res://addons/interaction_system/resources/interaction_tree.gd" type="Script" id=15]
+[ext_resource path="res://icon.png" type="Texture" id=16]
+[ext_resource path="res://addons/interaction_system/resources/item.gd" type="Script" id=17]
+[ext_resource path="res://addons/interaction_system/resources/item_aquirement.gd" type="Script" id=18]
+[ext_resource path="res://addons/interaction_system/nodes/back_node.gd" type="Script" id=19]
 
-[sub_resource type="RectangleShape2D" id=1]
+[sub_resource type="RectangleShape2D" id=25]
 extents = Vector2( 62, 52 )
 
 [sub_resource type="Resource" id=24]
 script = ExtResource( 13 )
-position = Vector2( -500, -80 )
+position = Vector2( -500, -140 )
 paths = PoolIntArray( 14 )
+
+[sub_resource type="Resource" id=30]
+script = ExtResource( 10 )
+expression = "money > 5"
 
 [sub_resource type="Resource" id=2]
 script = ExtResource( 8 )
 text = "Buy Weapon"
 repeatable = true
+condition = SubResource( 30 )
 
 [sub_resource type="Resource" id=3]
 script = ExtResource( 8 )
@@ -41,7 +50,7 @@ repeatable = true
 
 [sub_resource type="Resource" id=5]
 script = ExtResource( 9 )
-position = Vector2( -220, -80 )
+position = Vector2( -220, -140 )
 paths = PoolIntArray( 4, 3, 9 )
 option_data = [ SubResource( 2 ), SubResource( 3 ), SubResource( 4 ) ]
 
@@ -61,7 +70,7 @@ expression = "money > 5"
 
 [sub_resource type="Resource" id=9]
 script = ExtResource( 11 )
-position = Vector2( 160, -80 )
+position = Vector2( -40, -140 )
 paths = PoolIntArray( 7, 15 )
 condition = SubResource( 8 )
 
@@ -72,7 +81,7 @@ text = "Here, have some money."
 [sub_resource type="Resource" id=11]
 script = ExtResource( 7 )
 position = Vector2( 120, 20 )
-paths = PoolIntArray( 2 )
+paths = PoolIntArray( 20 )
 data = SubResource( 10 )
 
 [sub_resource type="Resource" id=13]
@@ -81,8 +90,8 @@ text = "Here, a brand new sword!"
 
 [sub_resource type="Resource" id=14]
 script = ExtResource( 7 )
-position = Vector2( 400, -80 )
-paths = PoolIntArray( 16 )
+position = Vector2( 200, -140 )
+paths = PoolIntArray( 17 )
 data = SubResource( 13 )
 
 [sub_resource type="Resource" id=15]
@@ -106,7 +115,7 @@ text = "Welcome to the shop!"
 
 [sub_resource type="Resource" id=19]
 script = ExtResource( 7 )
-position = Vector2( -400, -80 )
+position = Vector2( -400, -140 )
 paths = PoolIntArray( 2 )
 data = SubResource( 18 )
 
@@ -116,8 +125,8 @@ text = "Sorry, you don't have enough money."
 
 [sub_resource type="Resource" id=21]
 script = ExtResource( 7 )
-position = Vector2( 400, 0 )
-paths = PoolIntArray( 2 )
+position = Vector2( 200, -60 )
+paths = PoolIntArray( 18 )
 data = SubResource( 20 )
 
 [sub_resource type="Resource" id=22]
@@ -126,11 +135,44 @@ expression = "money -= 5"
 
 [sub_resource type="Resource" id=23]
 script = ExtResource( 7 )
-position = Vector2( 599, -79 )
-paths = PoolIntArray( 2 )
+position = Vector2( 520, -140 )
+paths = PoolIntArray( 19 )
 data = SubResource( 22 )
 
-[sub_resource type="Resource" id=25]
+[sub_resource type="Resource" id=27]
+script = ExtResource( 17 )
+name = "Sword"
+icon = ExtResource( 16 )
+
+[sub_resource type="Resource" id=28]
+script = ExtResource( 18 )
+item = SubResource( 27 )
+
+[sub_resource type="Resource" id=29]
+script = ExtResource( 7 )
+position = Vector2( 380, -140 )
+paths = PoolIntArray( 16 )
+data = SubResource( 28 )
+
+[sub_resource type="Resource" id=31]
+script = ExtResource( 19 )
+position = Vector2( 380, -60 )
+paths = PoolIntArray( -1 )
+target = 2
+
+[sub_resource type="Resource" id=32]
+script = ExtResource( 19 )
+position = Vector2( 680, -140 )
+paths = PoolIntArray( -1 )
+target = 2
+
+[sub_resource type="Resource" id=33]
+script = ExtResource( 19 )
+position = Vector2( 300, 20 )
+paths = PoolIntArray( -1 )
+target = 2
+
+[sub_resource type="Resource" id=26]
 script = ExtResource( 15 )
 nodes = {
 0: SubResource( 24 ),
@@ -143,7 +185,11 @@ nodes = {
 10: SubResource( 17 ),
 14: SubResource( 19 ),
 15: SubResource( 21 ),
-16: SubResource( 23 )
+16: SubResource( 23 ),
+17: SubResource( 29 ),
+18: SubResource( 31 ),
+19: SubResource( 32 ),
+20: SubResource( 33 )
 }
 comments = [  ]
 
@@ -169,11 +215,11 @@ script = ExtResource( 3 )
 texture = ExtResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Box"]
-shape = SubResource( 1 )
+shape = SubResource( 25 )
 
 [node name="InteractionTrigger" type="Node" parent="Box"]
 script = ExtResource( 6 )
-interaction = SubResource( 25 )
+interaction = SubResource( 26 )
 
 [node name="MoneyLabel" type="Label" parent="."]
 margin_right = 40.0

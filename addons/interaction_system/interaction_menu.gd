@@ -11,6 +11,7 @@ A simple implementation can be found here:
 # Emitted when an `Event` is hit.
 signal interaction_event(event)
 signal state_changed
+signal item_received(item)
 
 export var initial_state : Dictionary
 
@@ -23,7 +24,9 @@ const OptionsNode = preload("nodes/options_node.gd")
 const ActionNode = preload("nodes/action_node.gd")
 const StartNode = preload("nodes/start_node.gd")
 const EndNode = preload("nodes/end_node.gd")
+const BackNode = preload("nodes/back_node.gd")
 const ConditionNode = preload("nodes/condition_node.gd")
+const ItemAquirement = preload("resources/item_aquirement.gd")
 const Event = preload("resources/event.gd")
 const Message = preload("resources/message.gd")
 const StateChange = preload("resources/state_change.gd")
@@ -71,6 +74,8 @@ func execute():
 		instance.execute()
 		state.state = instance.state
 		emit_signal("state_changed")
+	elif node.data is ItemAquirement:
+		emit_signal("item_received", node.data.item)
 
 
 # End nodes have no special data by default. The interaction panel should
@@ -98,6 +103,8 @@ func show_node(node_num : int) -> void:
 			show_node(node.paths[0])
 	elif node is ConditionNode:
 		show_node(node.paths[int(not node.condition.is_met(state))])
+	elif node is BackNode:
+		show_node(node.target)
 	elif node is EndNode:
 		show_end(node)
 

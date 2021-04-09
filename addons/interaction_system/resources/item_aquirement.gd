@@ -2,7 +2,7 @@ tool
 extends InteractionActionData
 
 """
-A  that gives the player an item
+An action that gives the player an item
 """
 
 export var item : InteractionItem

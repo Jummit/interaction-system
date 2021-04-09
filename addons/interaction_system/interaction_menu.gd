@@ -2,10 +2,10 @@ extends Panel
 class_name InteractionMenu
 
 """
-An abstract panel that shows an `InteractionTree`
+An abstract panel that shows an interaction
 
 A simple implementation can be found here:
-"../simple_interaction_menu/simple_interaction_menu.gd"
+"simple_interaction_menu/simple_interaction_menu.gd"
 """
 
 # Emitted when an `Event` is hit.
@@ -24,7 +24,7 @@ const OptionsNode = preload("nodes/options_node.gd")
 const ActionNode = preload("nodes/action_node.gd")
 const StartNode = preload("nodes/start_node.gd")
 const EndNode = preload("nodes/end_node.gd")
-const BackNode = preload("nodes/back_node.gd")
+const JumpNode = preload("nodes/jump_node.gd")
 const ConditionNode = preload("nodes/condition_node.gd")
 const ItemAquirement = preload("resources/item_aquirement.gd")
 const Event = preload("resources/event.gd")
@@ -103,7 +103,7 @@ func show_node(node_num : int) -> void:
 			show_node(node.paths[0])
 	elif node is ConditionNode:
 		show_node(node.paths[int(not node.condition.is_met(state))])
-	elif node is BackNode:
+	elif node is JumpNode:
 		show_node(node.target)
 	elif node is EndNode:
 		show_end(node)

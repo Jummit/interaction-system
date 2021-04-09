@@ -1,11 +1,15 @@
 tool
 extends GraphNode
 
+"""
+The `GraphNode` representation of a `JumpNode`
+"""
+
 signal target_clicked
 
-const BackNode = preload("../nodes/back_node.gd")
+const JumpNode = preload("../nodes/jump_node.gd")
 
-func init(node : BackNode) -> void:
+func init(node : JumpNode) -> void:
 	$TargetButton.text = str(node.target)
 
 

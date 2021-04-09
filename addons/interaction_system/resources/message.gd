@@ -2,7 +2,7 @@ tool
 extends InteractionActionData
 
 """
-
+An action that shows a message
 """
 
 export var text : String

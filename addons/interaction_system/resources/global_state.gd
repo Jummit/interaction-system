@@ -2,7 +2,10 @@ extends Resource
 class_name GlobalInteractionState
 
 """
+A GDScript wrapper for a dictionary
 
+Used in `Condition`s expressions to allow access to the contents of the global
+state.
 """
 
 export var state : Dictionary

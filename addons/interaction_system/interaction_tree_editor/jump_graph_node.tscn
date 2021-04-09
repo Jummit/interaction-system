@@ -1,11 +1,11 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://addons/interaction_system/interaction_tree_editor/back_graph_node.gd" type="Script" id=1]
+[ext_resource path="res://addons/interaction_system/interaction_tree_editor/jump_graph_node.gd" type="Script" id=1]
 
-[node name="GraphNode" type="GraphNode"]
+[node name="JumpGraphNode" type="GraphNode"]
 margin_right = 32.0
 margin_bottom = 30.0
-title = "Go Back"
+title = "Jump"
 slot/0/left_enabled = true
 slot/0/left_type = 0
 slot/0/left_color = Color( 1, 1, 1, 1 )

@@ -14,7 +14,7 @@ var copy_offset : Vector2
 var connecting_from := -1
 var from_position : Vector2
 var from_port := -1
-var selecting_back_target_for : BackNode
+var selecting_back_target_for : JumpNode
 
 var action_graph_node := preload("action_graph_node.tscn")
 var option_graph_node := preload("option_graph_node.tscn")
@@ -22,7 +22,7 @@ var comment_graph_node := preload("comment_graph_node.tscn")
 var start_graph_node := preload("start_graph_node.tscn")
 var end_graph_node := preload("end_graph_node.tscn")
 var condition_graph_node := preload("condition_graph_node.tscn")
-var back_graph_node := preload("back_graph_node.tscn")
+var jump_graph_node := preload("jump_graph_node.tscn")
 
 const ActionNode = preload("../nodes/action_node.gd")
 const OptionsNode = preload("../nodes/options_node.gd")
@@ -30,7 +30,7 @@ const EndNode = preload("../nodes/end_node.gd")
 const CommentNode = preload("../nodes/comment_node.gd")
 const CommentGraphNode = preload("comment_graph_node.gd")
 const StartNode = preload("../nodes/start_node.gd")
-const BackNode = preload("../nodes/back_node.gd")
+const JumpNode = preload("../nodes/jump_node.gd")
 const ConditionNode = preload("../nodes/condition_node.gd")
 const Message = preload("../resources/message.gd")
 const Event = preload("../resources/event.gd")
@@ -146,8 +146,8 @@ func update_graph() -> void:
 			graph_node = condition_graph_node.instance()
 			graph_node.connect("condition_edited", self,
 					"_on_ConditionGraphNode_condition_edited", [node])
-		elif node is BackNode:
-			graph_node = back_graph_node.instance()
+		elif node is JumpNode:
+			graph_node = jump_graph_node.instance()
 			graph_node.connect("target_clicked", self,
 					"_on_BackGraphNode_target_clicked", [node])
 		
@@ -206,7 +206,7 @@ func _on_AddNodeMenu_id_pressed(id : int) -> void:
 				new_node = ActionNode.new()
 				new_node.data = StateChange.new()
 			7:
-				new_node = BackNode.new()
+				new_node = JumpNode.new()
 		
 		var new_id := interaction.get_available_id()
 		
@@ -408,7 +408,7 @@ func _on_ConditionGraphNode_condition_edited(node : ConditionNode) -> void:
 	emit_signal("resource_edited", node.condition)
 
 
-func _on_BackGraphNode_target_clicked(node : BackNode) -> void:
+func _on_BackGraphNode_target_clicked(node : JumpNode) -> void:
 	selecting_back_target_for = node
 
 

@@ -3,7 +3,7 @@ extends Resource
 class_name InteractionCondition
 
 """
-
+A condition used in `ActionNode`s
 """
 
 # A GDScript expression that is run on the global state, for example

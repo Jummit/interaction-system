@@ -2,7 +2,7 @@ tool
 extends InteractionActionData
 
 """
-A message that makes the `InteractionMenu` emit a signal
+An action that makes the `InteractionMenu` emit a signal
 """
 
 export var event : String

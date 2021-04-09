@@ -2,7 +2,7 @@ tool
 extends InteractionNode
 
 """
-
+Node that allows branching based on a condition
 """
 
 export var condition : InteractionCondition

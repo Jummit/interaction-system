@@ -5,11 +5,9 @@ class_name InteractionActionData
 """
 The data of an `InteractionActionNode`
 
-By default this only holds text, but can be extended to store more information.
-It is editable in the editor by clicking on the text of a `ActionNode`.
-
-ActionNodes have one input and one output port. They can have a condition and
-only get executed when it is met.
+By default this doesn't hold any data, but can be extended to store different
+information which will be editable in the editor by clicking on the text of an
+`ActionNode`.
 """
 
 export var condition : InteractionCondition

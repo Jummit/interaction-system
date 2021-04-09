@@ -9,15 +9,35 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Resource",
+"class": "GlobalInteractionState",
+"language": "GDScript",
+"path": "res://addons/interaction_system/resources/global_state.gd"
+}, {
+"base": "Resource",
+"class": "InteractionActionData",
+"language": "GDScript",
+"path": "res://addons/interaction_system/resources/action_data.gd"
+}, {
+"base": "Resource",
+"class": "InteractionCharacter",
+"language": "GDScript",
+"path": "res://addons/interaction_system/resources/character.gd"
+}, {
+"base": "Resource",
+"class": "InteractionCondition",
+"language": "GDScript",
+"path": "res://addons/interaction_system/resources/condition.gd"
+}, {
+"base": "Resource",
+"class": "InteractionItem",
+"language": "GDScript",
+"path": "res://addons/interaction_system/resources/item.gd"
+}, {
 "base": "Panel",
 "class": "InteractionMenu",
 "language": "GDScript",
-"path": "res://addons/interaction_system/interaction_menu/interaction_menu.gd"
-}, {
-"base": "Resource",
-"class": "InteractionMessage",
-"language": "GDScript",
-"path": "res://addons/interaction_system/resources/interaction_message.gd"
+"path": "res://addons/interaction_system/interaction_menu.gd"
 }, {
 "base": "Resource",
 "class": "InteractionNode",
@@ -27,7 +47,7 @@ _global_script_classes=[ {
 "base": "Resource",
 "class": "InteractionOption",
 "language": "GDScript",
-"path": "res://addons/interaction_system/resources/interaction_option.gd"
+"path": "res://addons/interaction_system/resources/option.gd"
 }, {
 "base": "Resource",
 "class": "InteractionTree",
@@ -40,8 +60,12 @@ _global_script_classes=[ {
 "path": "res://addons/interaction_system/interaction_trigger.gd"
 } ]
 _global_script_class_icons={
+"GlobalInteractionState": "",
+"InteractionActionData": "",
+"InteractionCharacter": "",
+"InteractionCondition": "",
+"InteractionItem": "",
 "InteractionMenu": "",
-"InteractionMessage": "",
 "InteractionNode": "",
 "InteractionOption": "",
 "InteractionTree": "",

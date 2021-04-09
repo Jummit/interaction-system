@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="interaction_tree_editor.gd" type="Script" id=1]
+[ext_resource path="res://addons/interaction_system/interaction_tree_editor/interaction_tree_editor.gd" type="Script" id=1]
 
 [node name="InteractionTreeEditor" type="Control"]
 anchor_right = 1.0
@@ -23,7 +23,7 @@ __meta__ = {
 [node name="AddNodeMenu" type="PopupMenu" parent="."]
 margin_right = 76.0
 margin_bottom = 52.0
-items = [ "Message", null, 0, false, false, 0, 0, null, "", false, "Option", null, 0, false, false, 1, 0, null, "", false, "Comment", null, 0, false, false, 2, 0, null, "", false, "End", null, 0, false, false, 3, 0, null, "", false ]
+items = [ "Message", null, 0, false, false, 0, 0, null, "", false, "Option", null, 0, false, false, 1, 0, null, "", false, "Comment", null, 0, false, false, 2, 0, null, "", false, "End", null, 0, false, false, 3, 0, null, "", false, "Condition", null, 0, false, false, 4, 0, null, "", false, "Event", null, 0, false, false, 5, 0, null, "", false, "Change State", null, 0, false, false, 6, 0, null, "", false ]
 
 [connection signal="_begin_node_move" from="GraphEdit" to="." method="_on_GraphEdit_begin_node_move"]
 [connection signal="_end_node_move" from="GraphEdit" to="." method="_on_GraphEdit_end_node_move"]

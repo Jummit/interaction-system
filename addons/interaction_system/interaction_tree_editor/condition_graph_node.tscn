@@ -1,0 +1,64 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/interaction_system/interaction_tree_editor/condition_graph_node.gd" type="Script" id=1]
+
+[node name="ConditionGraphNode" type="GraphNode"]
+margin_right = 73.0
+margin_bottom = 50.0
+title = "Condition"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color( 1, 1, 1, 1 )
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = true
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 171.0
+margin_bottom = 44.0
+
+[node name="ConditionButton" type="Button" parent="HBoxContainer"]
+margin_right = 100.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 100, 0 )
+size_flags_vertical = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Success" type="Label" parent="HBoxContainer"]
+margin_left = 104.0
+margin_top = 3.0
+margin_right = 155.0
+margin_bottom = 17.0
+text = "Success"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+margin_left = 16.0
+margin_top = 45.0
+margin_right = 171.0
+margin_bottom = 59.0
+alignment = 2
+
+[node name="Failure" type="Label" parent="HBoxContainer2"]
+margin_left = 112.0
+margin_right = 155.0
+margin_bottom = 14.0
+text = "Failure"
+
+[connection signal="pressed" from="HBoxContainer/ConditionButton" to="." method="_on_ConditionButton_pressed"]

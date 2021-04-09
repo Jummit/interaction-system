@@ -10,21 +10,28 @@ signal resource_edited(resource)
 var undo_redo : UndoRedo
 var interaction : InteractionTree setget set_interaction
 var copied_nodes : Array
+var copy_offset : Vector2
 var connecting_from := -1
+var from_position : Vector2
 var from_port := -1
 
-var message_graph_node := preload("message_graph_node.tscn")
+var action_graph_node := preload("action_graph_node.tscn")
 var option_graph_node := preload("option_graph_node.tscn")
 var comment_graph_node := preload("comment_graph_node.tscn")
 var start_graph_node := preload("start_graph_node.tscn")
 var end_graph_node := preload("end_graph_node.tscn")
+var condition_graph_node := preload("condition_graph_node.tscn")
 
-const MessageNode = preload("../nodes/message_node.gd")
+const ActionNode = preload("../nodes/action_node.gd")
 const OptionsNode = preload("../nodes/options_node.gd")
 const EndNode = preload("../nodes/end_node.gd")
 const CommentNode = preload("../nodes/comment_node.gd")
 const CommentGraphNode = preload("comment_graph_node.gd")
 const StartNode = preload("../nodes/start_node.gd")
+const ConditionNode = preload("../nodes/condition_node.gd")
+const Message = preload("../resources/message.gd")
+const Event = preload("../resources/event.gd")
+const StateChange = preload("../resources/state_change.gd")
 
 onready var graph_edit : GraphEdit = $GraphEdit
 onready var add_node_menu : PopupMenu = $AddNodeMenu
@@ -36,7 +43,8 @@ func apply_changes():
 func can_drop_data(_position : Vector2, data) -> bool:
 	if data is Dictionary and "files" in data:
 		var resource := load(data.files[0])
-		return resource is Script and resource.new() is InteractionMessage or\
+		return resource is Script and\
+				resource.new() is InteractionActionData or\
 				resource.new() is InteractionOption
 	return false
 
@@ -44,8 +52,8 @@ func can_drop_data(_position : Vector2, data) -> bool:
 func drop_data(position : Vector2, data) -> void:
 	var node_data : Resource = load(data.files[0]).new()
 	var node : InteractionNode
-	if node_data is InteractionMessage:
-		node = MessageNode.new()
+	if node_data is InteractionActionData:
+		node = ActionNode.new()
 		node.data = node_data
 	elif node_data is InteractionOption:
 		node = OptionsNode.new()
@@ -87,21 +95,11 @@ func move_node(node, to : Vector2) -> void:
 
 
 func connect_nodes(from : int, from_slot : int, to : int) -> void:
-	var from_node : InteractionNode = interaction.nodes[from]
-	if "next" in from_node:
-		# Could be an `EndNode` or a `MessageNode`
-		from_node.next = to
-	elif from_node is OptionsNode:
-		from_node.option_paths[from_slot] = to
+	interaction.nodes[from].paths[from_slot] = to
 
 
 func disconnect_nodes(from : int, from_slot : int) -> void:
-	var from_node : InteractionNode = interaction.nodes[from]
-	if "next" in from_node:
-		# Could be an `EndNode` or a `MessageNode`
-		from_node.next = -1
-	elif from_node is OptionsNode:
-		from_node.option_paths[from_slot] = -1
+	interaction.nodes[from].paths[from_slot] = -1
 
 
 # Add `GraphNode`s and connect them.
@@ -123,8 +121,8 @@ func update_graph() -> void:
 	for node_id in interaction.nodes:
 		var node : InteractionNode = interaction.nodes[node_id]
 		var graph_node : GraphNode
-		if node is MessageNode:
-			graph_node = message_graph_node.instance()
+		if node is ActionNode:
+			graph_node = action_graph_node.instance()
 			graph_node.connect("message_edited", self,
 					"_on_MessageGraphNode_message_edited", [node])
 		elif node is OptionsNode:
@@ -135,10 +133,17 @@ func update_graph() -> void:
 					"_on_OptionGraphNode_option_added", [node])
 			graph_node.connect("option_removed", self,
 					"_on_OptionGraphNode_option_removed", [node])
+			graph_node.connect("option_moved", self,
+					"_on_OptionGraphNode_option_moved", [node])
 		elif node is StartNode:
 			graph_node = start_graph_node.instance()
 		elif node is EndNode:
 			graph_node = end_graph_node.instance()
+		elif node is ConditionNode:
+			graph_node = condition_graph_node.instance()
+			graph_node.connect("condition_edited", self,
+					"_on_ConditionGraphNode_condition_edited", [node])
+		
 		graph_node.offset = node.position
 		graph_node.name = str(node_id)
 		graph_edit.add_child(graph_node)
@@ -154,15 +159,11 @@ func update_graph_connections() -> void:
 	graph_edit.clear_connections()
 	for node_id in interaction.nodes:
 		var node : InteractionNode = interaction.nodes[node_id]
-		if node is OptionsNode:
-			for option_num in node.option_data.size():
-				var to_node = node.option_paths[option_num]
-				if to_node != -1:
-					graph_edit.connect_node(str(node_id), option_num,
-							str(to_node), 0)
-		elif "next" in node:
-			if node.next != -1:
-				graph_edit.connect_node(str(node_id), 0, str(node.next), 0)
+		for port in node.paths.size():
+			var to_node = node.paths[port]
+			if to_node == -1:
+				continue
+			graph_edit.connect_node(str(node_id), port, str(to_node), 0)
 
 
 func _on_GraphEdit_popup_request(position: Vector2) -> void:
@@ -181,19 +182,28 @@ func _on_AddNodeMenu_id_pressed(id : int) -> void:
 		var new_node : InteractionNode
 		match id:
 			0:
-				new_node = MessageNode.new()
-				new_node.data = InteractionMessage.new("Message")
+				new_node = ActionNode.new()
+				new_node.data = Message.new()
 			1:
 				new_node = OptionsNode.new()
 				new_node.add_option(InteractionOption.new("Option 1"))
 			3:
 				new_node = EndNode.new()
+			4:
+				new_node = ConditionNode.new()
+				new_node.condition = InteractionCondition.new()
+			5:
+				new_node = ActionNode.new()
+				new_node.data = Event.new()
+			6:
+				new_node = ActionNode.new()
+				new_node.data = StateChange.new()
 		
 		var new_id := interaction.get_available_id()
 		
 		undo_redo.create_action("Add Node")
 		undo_redo.add_do_method(self, "add_node", new_node, new_id,
-				graph_edit.scroll_offset + get_local_mouse_position())
+				from_position)
 		undo_redo.add_undo_method(self, "remove_node", new_node)
 		if connecting_from != -1:
 			undo_redo.add_do_method(self, "connect_nodes", connecting_from,
@@ -264,6 +274,7 @@ func _on_GraphEdit_connection_to_empty(from : String, from_slot : int,
 		release_position : Vector2) -> void:
 	connecting_from = int(from)
 	from_port = from_slot
+	from_position = release_position + graph_edit.scroll_offset
 	add_node_menu.popup()
 	add_node_menu.rect_position = rect_global_position + release_position
 
@@ -272,7 +283,8 @@ func _on_GraphEdit_disconnection_request(from : String, from_slot : int,
 		to : String, _to_slot: int) -> void:
 	undo_redo.create_action("Disconnect Node")
 	undo_redo.add_do_method(self, "disconnect_nodes", int(from), from_slot)
-	undo_redo.add_undo_method(self, "connect_nodes", int(from), from_slot, int(to))
+	undo_redo.add_undo_method(self, "connect_nodes", int(from), from_slot,
+			int(to))
 	undo_redo.add_do_method(self, "update_graph_connections")
 	undo_redo.add_undo_method(self, "update_graph_connections")
 	undo_redo.commit_action()
@@ -280,6 +292,13 @@ func _on_GraphEdit_disconnection_request(from : String, from_slot : int,
 
 func _on_GraphEdit_paste_nodes_request() -> void:
 	undo_redo.create_action("Paste Nodes")
+	var offset := -copy_offset + get_local_mouse_position() +\
+			graph_edit.scroll_offset
+	for node_num in copied_nodes.size():
+		var id : int = interaction.get_available_id() + node_num
+		undo_redo.add_do_method(self, "add_node", copied_nodes[node_num], id,
+				copied_nodes[node_num].position + offset)
+		undo_redo.add_undo_method(self, "remove_node", id)
 	undo_redo.add_do_method(self, "update_graph")
 	undo_redo.add_undo_method(self, "update_graph")
 	undo_redo.commit_action()
@@ -287,19 +306,30 @@ func _on_GraphEdit_paste_nodes_request() -> void:
 
 func _on_GraphEdit_copy_nodes_request() -> void:
 	copied_nodes.clear()
+	copy_offset = Vector2.INF
 	for node in graph_edit.get_children():
 		if node is GraphNode and node.selected:
+			copy_offset.x = min(copy_offset.x, node.offset.x)
+			copy_offset.y = min(copy_offset.y, node.offset.y)
 			copied_nodes.append(interaction.nodes[int(node.name)].duplicate())
 
 
 func _on_GraphEdit_duplicate_nodes_request() -> void:
 	undo_redo.create_action("Duplicate Nodes")
+	var next_id := interaction.get_available_id()
+	for node in graph_edit.get_children():
+		if node is GraphNode and node.selected:
+			var duplicated = interaction.nodes[int(node.name)].duplicate()
+			undo_redo.add_do_method(self, "add_node", duplicated, next_id,
+					duplicated.position + Vector2.ONE * 10)
+			undo_redo.add_undo_method(self, "remove_node", next_id)
+			next_id += 1
 	undo_redo.add_do_method(self, "update_graph")
 	undo_redo.add_undo_method(self, "update_graph")
 	undo_redo.commit_action()
 
 
-func _on_MessageGraphNode_message_edited(node : MessageNode) -> void:
+func _on_MessageGraphNode_message_edited(node : ActionNode) -> void:
 	emit_signal("resource_edited", node.data)
 
 
@@ -325,12 +355,13 @@ func _on_CommentGraph_resize_request(new_min_size : Vector2,
 	undo_redo.commit_action()
 
 
-func _on_OptionGraphNode_option_added(node : OptionsNode) -> void:
+func _on_OptionGraphNode_option_added(option : InteractionOption,
+		node : OptionsNode) -> void:
 	yield(get_tree(), "idle_frame")
+	option.text = "Option " + str(node.paths.size() + 1)
 	undo_redo.create_action("Add Option")
-	undo_redo.add_do_method(node, "add_option",
-			InteractionOption.new("Option 1"))
-	undo_redo.add_undo_method(node, "remove_option")
+	undo_redo.add_do_method(node, "add_option", option)
+	undo_redo.add_undo_method(node, "remove_option", node.paths.size())
 	undo_redo.add_do_method(self, "update_graph")
 	undo_redo.add_undo_method(self, "update_graph")
 	undo_redo.commit_action()
@@ -341,11 +372,28 @@ func _on_OptionGraphNode_option_edited(option_num : int,
 	emit_signal("resource_edited", node.option_data[option_num])
 
 
-func _on_OptionGraphNode_option_removed(node : OptionsNode) -> void:
+func _on_OptionGraphNode_option_removed(option : int,
+		node : OptionsNode) -> void:
 	yield(get_tree(), "idle_frame")
 	undo_redo.create_action("Remove Option")
-	undo_redo.add_do_method(node, "remove_option")
-	undo_redo.add_undo_method(node, "add_option", node.option_data.back())
+	undo_redo.add_do_method(node, "remove_option", option)
+	undo_redo.add_undo_method(node, "add_option", node.option_data.back(),
+			option)
 	undo_redo.add_do_method(self, "update_graph")
 	undo_redo.add_undo_method(self, "update_graph")
 	undo_redo.commit_action()
+
+
+func _on_OptionGraphNode_option_moved(option : int, to : int,
+		node : OptionsNode) -> void:
+	yield(get_tree(), "idle_frame")
+	undo_redo.create_action("Move Option")
+	undo_redo.add_do_method(node, "move_option", option, to)
+	undo_redo.add_undo_method(node, "move_option", to, option)
+	undo_redo.add_do_method(self, "update_graph")
+	undo_redo.add_undo_method(self, "update_graph")
+	undo_redo.commit_action()
+
+
+func _on_ConditionGraphNode_condition_edited(node : ConditionNode) -> void:
+	emit_signal("resource_edited", node.condition)

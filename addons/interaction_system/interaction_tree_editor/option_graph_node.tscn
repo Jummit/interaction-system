@@ -1,10 +1,23 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=4 format=2]
 
-[ext_resource path="option_graph_node.gd" type="Script" id=1]
+[ext_resource path="res://addons/interaction_system/interaction_tree_editor/option_graph_node.gd" type="Script" id=1]
+
+[sub_resource type="StyleBoxEmpty" id=1]
+
+[sub_resource type="Theme" id=2]
+VScrollBar/icons/decrement = null
+VScrollBar/icons/decrement_highlight = null
+VScrollBar/icons/increment = null
+VScrollBar/icons/increment_highlight = null
+VScrollBar/styles/grabber = SubResource( 1 )
+VScrollBar/styles/grabber_highlight = SubResource( 1 )
+VScrollBar/styles/grabber_pressed = SubResource( 1 )
+VScrollBar/styles/scroll = SubResource( 1 )
+VScrollBar/styles/scroll_focus = SubResource( 1 )
 
 [node name="OptionInteractionGraphNode" type="GraphNode"]
-margin_right = 73.0
-margin_bottom = 50.0
+margin_right = 149.0
+margin_bottom = 71.0
 title = "Options"
 slot/0/left_enabled = false
 slot/0/left_type = 0
@@ -12,16 +25,40 @@ slot/0/left_color = Color( 1, 1, 1, 1 )
 slot/0/right_enabled = false
 slot/0/right_type = 0
 slot/0/right_color = Color( 1, 1, 1, 1 )
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color( 1, 1, 1, 1 )
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color( 1, 1, 1, 1 )
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="OptionsAnchor" type="Control" parent="."]
+margin_left = 16.0
+margin_top = 24.0
+margin_right = 133.0
+margin_bottom = 59.0
+rect_min_size = Vector2( 0, 35 )
+
+[node name="Options" type="Tree" parent="OptionsAnchor"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = SubResource( 2 )
+custom_constants/draw_guides = 0
+hide_root = true
+drop_mode_flags = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Buttons" type="HBoxContainer" parent="."]
 margin_left = 16.0
-margin_top = 24.0
-margin_right = 67.0
-margin_bottom = 44.0
+margin_top = 60.0
+margin_right = 133.0
+margin_bottom = 80.0
 
 [node name="AddOptionButton" type="Button" parent="Buttons"]
 margin_right = 20.0
@@ -35,5 +72,6 @@ margin_bottom = 20.0
 disabled = true
 text = "-"
 
+[connection signal="item_selected" from="OptionsAnchor/Options" to="." method="_on_Options_item_selected"]
 [connection signal="pressed" from="Buttons/AddOptionButton" to="." method="_on_AddOptionButton_pressed"]
 [connection signal="pressed" from="Buttons/RemoveOptionButton" to="." method="_on_RemoveOptionButton_pressed"]

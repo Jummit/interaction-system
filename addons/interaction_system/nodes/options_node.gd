@@ -5,16 +5,31 @@ extends InteractionNode
 A node that shows a list of options to the player
 """
 
-# An array of node ids the options lead to.
-export var option_paths : PoolIntArray
 # An array of `InteractionOption` resources.
 export var option_data : Array
 
-func add_option(data : InteractionOption):
-	option_paths.append(-1)
-	option_data.append(data)
+func add_option(data : InteractionOption, pos := option_data.size()):
+	paths.insert(pos, -1)
+	option_data.insert(pos, data)
 
 
-func remove_option():
-	option_paths.remove(option_paths.size() - 1)
-	option_data.pop_back()
+func remove_option(option : int):
+	paths.remove(option)
+	option_data.remove(option)
+
+
+func move_option(option : int, to : int) -> void:
+	var old_data := option_data.duplicate()
+	var old_paths := Array(paths)
+	paths = []
+	option_data.clear()
+	for i in old_paths.size():
+		if i == to:
+			option_data.append(old_data[option])
+			paths.append(old_paths[option])
+		if i != option:
+			option_data.append(old_data[i])
+			paths.append(old_paths[i])
+	if to >= old_paths.size():
+		option_data.append(old_data[option])
+		paths.append(old_paths[option])

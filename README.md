@@ -4,4 +4,16 @@ A dialog tree plugin for the Godot Engine.
 
 ![screeshot](screenshot.png)
 
-## Usage
+## Getting Started
+
+## For Designers
+
+### Nodes
+
+### Concepts
+
+## For Programmers
+
+### Custom Interaction Menus
+
+### Custom Actions

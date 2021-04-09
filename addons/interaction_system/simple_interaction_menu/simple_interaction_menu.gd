@@ -18,20 +18,24 @@ func show_start(start : StartNode) -> void:
 func show_options(options : OptionsNode) -> void:
 	.show_options(options)
 	for option_num in options.option_data.size():
+		var data : InteractionOption = options.option_data[option_num]
+		if not data.condition_met(state):
+			continue
 		var option_button := Button.new()
-		option_button.text = tr(options.option_data[option_num].text)
+		option_button.text = tr(data.text)
 		option_button.connect("pressed", self, "_on_OptionButton_pressed",
 				[option_num])
 		option_button.disabled = visited_option(options, option_num)
 		options_container.add_child(option_button)
 
 
-func show_message(message : MessageNode) -> void:
-	.show_message(message)
-	var message_label := Label.new()
-	message_label.text = tr(message.data.text)
-	messages.add_child(message_label)
-	show_node(message.next)
+func show_action_node(node : ActionNode) -> void:
+	.show_action_node(node)
+	if node.data is Message:
+		var message_label := Label.new()
+		message_label.text = tr(node.data.text)
+		messages.add_child(message_label)
+	show_node(node.paths[0])
 
 
 func show_end(end : EndNode) -> void:

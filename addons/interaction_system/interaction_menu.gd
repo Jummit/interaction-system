@@ -18,6 +18,7 @@ export var initial_state : Dictionary
 var interaction : InteractionTree setget set_interaction
 var current_options : OptionsNode
 var visited_options : Dictionary
+var interaction_count : Dictionary
 var state := GlobalInteractionState.new()
 
 const OptionsNode = preload("nodes/options_node.gd")
@@ -44,11 +45,15 @@ func _enter_tree() -> void:
 
 # Setting the interaction tree effectively starts the interaction.
 func set_interaction(to : InteractionTree) -> void:
+	if not to in interaction_count:
+		interaction_count[to] = 0
 	interaction = to
 	if not interaction in visited_options:
 		visited_options[interaction] = {}
 	clear()
-	show_node(0)
+	var start_nodes := interaction.get_start_nodes()
+	show_node(start_nodes[min(interaction_count[interaction],
+			start_nodes.size() - 1)])
 
 
 # Shows the options of an `OptionsNode`.
@@ -123,6 +128,7 @@ func option_selected(option : int) -> void:
 
 # Called when the interaction came to an end.
 func end_interaction() -> void:
+	interaction_count[interaction] += 1
 	clear()
 
 

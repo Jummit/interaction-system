@@ -29,6 +29,7 @@ const OptionsNode = preload("../nodes/options_node.gd")
 const EndNode = preload("../nodes/end_node.gd")
 const CommentNode = preload("../nodes/comment_node.gd")
 const CommentGraphNode = preload("comment_graph_node.gd")
+const OptionGraphNode = preload("option_graph_node.gd")
 const StartNode = preload("../nodes/start_node.gd")
 const JumpNode = preload("../nodes/jump_node.gd")
 const ConditionNode = preload("../nodes/condition_node.gd")
@@ -38,10 +39,6 @@ const StateChange = preload("../resources/state_change.gd")
 
 onready var graph_edit : GraphEdit = $GraphEdit
 onready var add_node_menu : PopupMenu = $AddNodeMenu
-
-func apply_changes():
-	pass
-
 
 func can_drop_data(_position : Vector2, data) -> bool:
 	if data is Dictionary and "files" in data:
@@ -78,7 +75,7 @@ func set_interaction(to):
 
 func add_node(node : InteractionNode, id : int, position : Vector2) -> void:
 	node.position = position
-	interaction.nodes[id] = node
+	interaction.nodes[id] = node 
 
 
 func remove_node(id : int) -> void:
@@ -173,9 +170,11 @@ func update_graph_connections() -> void:
 			graph_edit.connect_node(str(node_id), port, str(to_node), 0)
 
 
-func _on_GraphEdit_popup_request(position: Vector2) -> void:
+func _on_GraphEdit_popup_request(position : Vector2) -> void:
 	add_node_menu.popup()
 	add_node_menu.rect_position = position
+	from_position = (get_local_mouse_position() + graph_edit.scroll_offset) /\
+			graph_edit.zoom
 
 
 func _on_AddNodeMenu_id_pressed(id : int) -> void:
@@ -207,6 +206,9 @@ func _on_AddNodeMenu_id_pressed(id : int) -> void:
 				new_node.data = StateChange.new()
 			7:
 				new_node = JumpNode.new()
+			8:
+				new_node = StartNode.new()
+				new_node.number = interaction.get_available_start()
 		
 		var new_id := interaction.get_available_id()
 		
@@ -248,7 +250,7 @@ func _on_GraphEdit_delete_nodes_request() -> void:
 		else:
 			var id := int(graph_node.name)
 			if id == 0:
-				# Don't delete the start node.
+				# Don't delete the first start node.
 				continue
 			var node : InteractionNode = interaction.nodes[id]
 			undo_redo.add_undo_method(self, "add_node", node, id, node.position)
@@ -283,7 +285,8 @@ func _on_GraphEdit_connection_to_empty(from : String, from_slot : int,
 		release_position : Vector2) -> void:
 	connecting_from = int(from)
 	from_port = from_slot
-	from_position = release_position + graph_edit.scroll_offset
+	from_position = (release_position + graph_edit.scroll_offset) /\
+			graph_edit.zoom
 	add_node_menu.popup()
 	add_node_menu.rect_position = rect_global_position + release_position
 
@@ -426,7 +429,7 @@ func _on_GraphEdit_draw() -> void:
 			graph_edit.draw_rect(graph_node.get_rect(), Color.white, false, 3)
 
 
-func _input(event: InputEvent) -> void:
+func _input(event : InputEvent) -> void:
 	if not selecting_back_target_for:
 		return
 	if event is InputEventMouseButton and\
@@ -443,3 +446,8 @@ func _input(event: InputEvent) -> void:
 			undo_redo.commit_action()
 		selecting_back_target_for = null
 	graph_edit.update()
+
+
+func _on_GraphEdit_node_selected(node : Node) -> void:
+	if node is OptionGraphNode:
+		emit_signal("resource_edited", node.node)

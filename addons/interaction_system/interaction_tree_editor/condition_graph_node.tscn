@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://addons/interaction_system/interaction_tree_editor/condition_graph_node.gd" type="Script" id=1]
+[ext_resource path="condition_graph_node.gd" type="Script" id=1]
 
 [node name="ConditionGraphNode" type="GraphNode"]
 margin_right = 73.0

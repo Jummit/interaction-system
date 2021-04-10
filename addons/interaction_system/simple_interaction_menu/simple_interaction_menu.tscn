@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://addons/interaction_system/simple_interaction_menu/simple_interaction_menu.gd" type="Script" id=1]
+[ext_resource path="simple_interaction_menu.gd" type="Script" id=1]
 
 [node name="SimpleInteractionMenu" type="Panel"]
 visible = false

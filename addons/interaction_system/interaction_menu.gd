@@ -45,12 +45,12 @@ func _enter_tree() -> void:
 
 # Setting the interaction tree effectively starts the interaction.
 func set_interaction(to : InteractionTree) -> void:
+	clear()
 	if not to in interaction_count:
 		interaction_count[to] = 0
 	interaction = to
 	if not interaction in visited_options:
 		visited_options[interaction] = {}
-	clear()
 	var start_nodes := interaction.get_start_nodes()
 	show_node(start_nodes[min(interaction_count[interaction],
 			start_nodes.size() - 1)])

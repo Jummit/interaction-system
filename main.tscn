@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=2]
+[gd_scene load_steps=52 format=2]
 
 [ext_resource path="res://addons/interaction_system/simple_interaction_menu/simple_interaction_menu.tscn" type="PackedScene" id=1]
 [ext_resource path="res://main.gd" type="Script" id=2]
@@ -19,13 +19,14 @@
 [ext_resource path="res://addons/interaction_system/resources/item.gd" type="Script" id=17]
 [ext_resource path="res://addons/interaction_system/resources/item_aquirement.gd" type="Script" id=18]
 [ext_resource path="res://addons/interaction_system/nodes/jump_node.gd" type="Script" id=19]
+[ext_resource path="res://tim.tres" type="Resource" id=20]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 62, 52 )
 
 [sub_resource type="Resource" id=2]
 script = ExtResource( 13 )
-position = Vector2( -500, -140 )
+position = Vector2( -540, -140 )
 paths = PoolIntArray( 14 )
 number = 0
 
@@ -78,6 +79,7 @@ condition = SubResource( 10 )
 [sub_resource type="Resource" id=12]
 script = ExtResource( 12 )
 text = "Here, have some money."
+from = ExtResource( 20 )
 
 [sub_resource type="Resource" id=13]
 script = ExtResource( 7 )
@@ -88,6 +90,7 @@ data = SubResource( 12 )
 [sub_resource type="Resource" id=14]
 script = ExtResource( 12 )
 text = "Here, a brand new sword!"
+from = ExtResource( 20 )
 
 [sub_resource type="Resource" id=15]
 script = ExtResource( 7 )
@@ -98,6 +101,7 @@ data = SubResource( 14 )
 [sub_resource type="Resource" id=16]
 script = ExtResource( 12 )
 text = "See you next time!"
+from = ExtResource( 20 )
 
 [sub_resource type="Resource" id=17]
 script = ExtResource( 7 )
@@ -113,6 +117,7 @@ paths = PoolIntArray(  )
 [sub_resource type="Resource" id=19]
 script = ExtResource( 12 )
 text = "Welcome to the shop!"
+from = ExtResource( 20 )
 
 [sub_resource type="Resource" id=20]
 script = ExtResource( 7 )
@@ -123,6 +128,7 @@ data = SubResource( 19 )
 [sub_resource type="Resource" id=21]
 script = ExtResource( 12 )
 text = "Sorry, you don't have enough money."
+from = ExtResource( 20 )
 
 [sub_resource type="Resource" id=22]
 script = ExtResource( 7 )

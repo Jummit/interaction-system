@@ -9,6 +9,9 @@ Shows a scrollable log of messages with the option buttons at the bottom.
 onready var messages : VBoxContainer = $ScrollContainer/Control/Messages
 onready var options_container : VBoxContainer = $ScrollContainer/Control/Options
 onready var end_button : Button = $EndButton
+onready var character_info : VBoxContainer = $CharacterInfo
+onready var character_texture : TextureRect = $CharacterInfo/CharacterTexture
+onready var character_name : Label = $CharacterInfo/CharacterName
 
 func show_start(start : StartNode) -> void:
 	show()
@@ -32,13 +35,18 @@ func show_options(options : OptionsNode) -> void:
 
 func show_action_node(node : ActionNode) -> void:
 	.show_action_node(node)
-	if node.data is Message:
+	var data : InteractionActionData = node.data
+	if data is Message:
 		var message_label := Label.new()
-		message_label.text = tr(node.data.text)
+		message_label.text = tr(data.text)
 		messages.add_child(message_label)
+		character_info.visible = data.from != null
+		if data.from:
+			character_texture.texture = data.from.icon
+			character_name.text = data.from.name
 	if node.data is ItemAquirement:
 		var texture := TextureRect.new()
-		texture.texture = node.data.item.icon
+		texture.texture = data.item.icon
 		messages.add_child(texture)
 	show_node(node.paths[0])
 	scroll_to_bottom()
@@ -55,6 +63,7 @@ func end_interaction() -> void:
 
 
 func clear() -> void:
+	.clear()
 	end_button.hide()
 	for message in messages.get_children():
 		message.queue_free()

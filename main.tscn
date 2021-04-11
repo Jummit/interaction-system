@@ -27,6 +27,7 @@ extents = Vector2( 62, 52 )
 script = ExtResource( 13 )
 position = Vector2( -500, -140 )
 paths = PoolIntArray( 14 )
+number = 0
 
 [sub_resource type="Resource" id=3]
 script = ExtResource( 10 )

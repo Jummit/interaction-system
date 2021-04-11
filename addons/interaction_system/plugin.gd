@@ -44,10 +44,6 @@ func edit(object : Object) -> void:
 	make_bottom_panel_item_visible(interaction_tree_editor)
 
 
-func apply_changes() -> void:
-	interaction_tree_editor.apply_changes()
-
-
 func clear() -> void:
 	interaction_tree_editor.hide()
 

@@ -129,6 +129,7 @@ func end_interaction() -> void:
 # Clears the interaction panel. Called when a new interaction starts or ends.
 func clear() -> void:
 	current_options = null
+	interaction = null
 
 
 func _on_SceneTree_node_added(node : Node) -> void:
@@ -137,4 +138,5 @@ func _on_SceneTree_node_added(node : Node) -> void:
 
 
 func _on_InteractionNode_triggered(node : InteractionTrigger) -> void:
-	set_interaction(node.interaction)
+	if not interaction:
+		set_interaction(node.interaction)

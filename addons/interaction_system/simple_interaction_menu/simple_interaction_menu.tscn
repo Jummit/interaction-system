@@ -52,6 +52,20 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="ContinueButton" type="Button" parent="."]
+visible = false
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -34.5
+margin_top = -20.0
+margin_right = 34.5
+text = "Continue"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="CharacterInfo" type="VBoxContainer" parent="."]
 visible = false
 margin_left = -166.0
@@ -76,3 +90,5 @@ align = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[connection signal="pressed" from="ContinueButton" to="." method="_on_ContinueButton_pressed"]

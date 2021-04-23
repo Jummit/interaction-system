@@ -137,6 +137,25 @@ func clear() -> void:
 	current_options = null
 
 
+func save_state(path : String) -> void:
+	var file := File.new()
+	file.open(path, File.WRITE)
+	file.store_string(to_json({
+		state = state.state,
+		visited_options = visited_options,
+		interaction_count = interaction_count,
+	}))
+
+
+func load_state(path : String) -> void:
+	var file := File.new()
+	file.open(path, File.READ)
+	var data : Dictionary = parse_json(file.get_as_text())
+	state.state = data.state
+	visited_options = data.visited_options
+	interaction_count = data.interaction_count
+
+
 func _on_SceneTree_node_added(node : Node) -> void:
 	if node is InteractionTrigger:
 		node.connect("triggered", self, "_on_InteractionNode_triggered", [node])

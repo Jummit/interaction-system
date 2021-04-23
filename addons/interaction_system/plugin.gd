@@ -25,7 +25,9 @@ func _on_selection_changed():
 	var trigger_selected := (not selected.empty()) and\
 			selected.front() is InteractionTrigger
 	button.visible = trigger_selected
-	if not trigger_selected:
+	if trigger_selected:
+		interaction_tree_editor.show()
+	else:
 		hide_bottom_panel()
 
 

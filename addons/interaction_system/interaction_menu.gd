@@ -45,12 +45,12 @@ func _enter_tree() -> void:
 
 # Setting the interaction tree effectively starts the interaction.
 func set_interaction(to : InteractionTree) -> void:
+	clear()
 	if not to in interaction_count:
 		interaction_count[to] = 0
 	interaction = to
 	if not interaction in visited_options:
 		visited_options[interaction] = {}
-	clear()
 	var start_nodes := interaction.get_start_nodes()
 	show_node(start_nodes[min(interaction_count[interaction],
 			start_nodes.size() - 1)])
@@ -135,6 +135,7 @@ func end_interaction() -> void:
 # Clears the interaction panel. Called when a new interaction starts or ends.
 func clear() -> void:
 	current_options = null
+	interaction = null
 
 
 func save_state(path : String) -> void:
@@ -162,4 +163,5 @@ func _on_SceneTree_node_added(node : Node) -> void:
 
 
 func _on_InteractionNode_triggered(node : InteractionTrigger) -> void:
-	set_interaction(node.interaction)
+	if not interaction:
+		set_interaction(node.interaction)

@@ -69,7 +69,7 @@ _global_script_class_icons={
 "InteractionNode": "",
 "InteractionOption": "",
 "InteractionTree": "",
-"InteractionTrigger": ""
+"InteractionTrigger": "res://addons/interaction_system/interaction_trigger_icon.svg"
 }
 
 [application]

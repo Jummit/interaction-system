@@ -9,6 +9,12 @@ Shows a scrollable log of messages with the option buttons at the bottom.
 onready var messages : VBoxContainer = $ScrollContainer/Control/Messages
 onready var options_container : VBoxContainer = $ScrollContainer/Control/Options
 onready var end_button : Button = $EndButton
+onready var continue_button : Button = $ContinueButton
+onready var character_info : VBoxContainer = $CharacterInfo
+onready var character_texture : TextureRect = $CharacterInfo/CharacterTexture
+onready var character_name : Label = $CharacterInfo/CharacterName
+
+var next := -1
 
 func show_start(start : StartNode) -> void:
 	show()
@@ -32,15 +38,29 @@ func show_options(options : OptionsNode) -> void:
 
 func show_action_node(node : ActionNode) -> void:
 	.show_action_node(node)
-	if node.data is Message:
+	var data : InteractionActionData = node.data
+	if data is Message:
 		var message_label := Label.new()
-		message_label.text = tr(node.data.text)
+		message_label.text = tr(data.text)
 		messages.add_child(message_label)
-	if node.data is ItemAquirement:
+		character_info.visible = data.from != null
+		if data.from:
+			character_texture.texture = data.from.icon
+			character_name.text = data.from.name
+		next = node.paths[0]
+	elif data is ItemAquirement:
 		var texture := TextureRect.new()
-		texture.texture = node.data.item.icon
+		texture.texture = data.item.icon
 		messages.add_child(texture)
-	show_node(node.paths[0])
+	var next_id := node.paths[0]
+	var next_node : InteractionNode = interaction.nodes[next_id]
+	if data is Message and next_node is ActionNode and\
+			next_node.data is Message:
+		# Show the continue button when there are multiple messages
+		# back-to-back.
+		continue_button.show()
+	else:
+		show_node(node.paths[0])
 	scroll_to_bottom()
 
 
@@ -55,6 +75,7 @@ func end_interaction() -> void:
 
 
 func clear() -> void:
+	.clear()
 	end_button.hide()
 	for message in messages.get_children():
 		message.queue_free()
@@ -72,3 +93,9 @@ func _on_OptionButton_pressed(option : int) -> void:
 	for option in options_container.get_children():
 		option.queue_free()
 	option_selected(option)
+
+
+func _on_ContinueButton_pressed() -> void:
+	show_node(next)
+	next = -1
+	continue_button.hide()
